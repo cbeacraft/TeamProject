@@ -1,9 +1,5 @@
 package teamproject;
 
-/**
- *
- * @author Joseph
- */
 public class Badge {
     private String id;
     private String description;
