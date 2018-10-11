@@ -10,7 +10,7 @@ public class Punch {
     private int punchtypeid;
 
     //Constructor
-    public Punch(int id, long originaltimestamp, long adjustedtimestamp, int terminalid, String badgeid, int punchtypeid) {
+    public Punch(int id, long originaltimestamp, int terminalid, String badgeid, int punchtypeid) {
         this.id = id;
         this.originaltimestamp = originaltimestamp;
         this.adjustedtimestamp = adjustedtimestamp;
