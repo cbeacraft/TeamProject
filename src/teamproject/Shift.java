@@ -16,18 +16,19 @@ public class Shift {
         private int lunchdeduct;
 
         //Constructor 
-        public void shift(int id, String description, LocalTime start, LocalTime stop, int interval, 
-        int graceperiod, int dock, LocalTime lunchstart, LocalTime lunchstop, int lunchdeduct) {
+        public void shift(int id, String description, int starthour, int startminute, int stophour,
+        int stopminute, int interval, int graceperiod, int dock, int lunchstarthour, int lunchstartminute,
+        int lunchstophour, int lunchstopminute, int lunchdeduct) {
 
             this.id = id;
             this.description = description;
-            this.start = start;
-            this.stop = stop;
+            this.start = LocalTime.of(starthour, startminute);
+            this.stop = LocalTime.of(stophour, stopminute);
             this.interval = interval; 
             this.graceperiod = graceperiod;
             this.dock = dock;
-            this.lunchstart = lunchstart;
-            this.lunchstop = lunchstop;
+            this.lunchstart = LocalTime.of(lunchstarthour, lunchstartminute);
+            this.lunchstop = LocalTime.of(lunchstarthour, lunchstartminute);
             this.lunchdeduct = lunchdeduct;
 
         }
