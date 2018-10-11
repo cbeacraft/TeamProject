@@ -59,7 +59,7 @@ public Punch getPunch(int a)
         
         try
         {
-            String  query = "SELECT * FROM punch WHERE id =" + a;
+            String  query = "SELECT *, UNIX_TIMESTAMP(originaltimestamp) * 1000 AS ts FROM punch WHERE id =" + a;
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(query);
 
@@ -68,7 +68,7 @@ public Punch getPunch(int a)
                 int id = rs.getInt("id");
                 int terminalId = rs.getInt("terminalid");
                 String badgeId = rs.getString("badgeid");
-                Timestamp timeStamp = rs.getTimestamp("originaltimestamp");
+                long timeStamp = rs.getLong("ts");
                 int punchTypeId = rs.getInt("punchtypeid");
                 punch = new Punch(id,terminalId, badgeId,timeStamp, punchTypeId);
              }
