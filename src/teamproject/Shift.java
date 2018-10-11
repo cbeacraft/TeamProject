@@ -1,22 +1,23 @@
 package teamproject;
+import java.time.LocalTime;
 
 public class Shift {
 
         //Instance Fields
         private int id;
         private String description; 
-        private int start;
-        private int stop;
+        private LocalTime start;
+        private LocalTime stop;
         private int interval;
         private int graceperiod;
         private int dock;
-        private int lunchstart;
-        private int lunchstop;
+        private LocalTime lunchstart;
+        private LocalTime lunchstop;
         private int lunchdeduct;
 
         //Constructor 
-        public void shift(int id, String description, int start, int stop, 
-        int interval, int graceperiod, int dock, int lunchstart, int lunchstop, int lunchdeduct) {
+        public void shift(int id, String description, LocalTime start, LocalTime stop, int interval, 
+        int graceperiod, int dock, LocalTime lunchstart, LocalTime lunchstop, int lunchdeduct) {
 
             this.id = id;
             this.description = description;
@@ -38,10 +39,10 @@ public class Shift {
         public String getDescription() {
                 return description;
         }
-        public int getStart() {
+        public LocalTime getStart() {
                 return start;
         }
-        public int getStop() {
+        public LocalTime getStop() {
                 return stop;
         }
         public int getInterval() {
@@ -53,10 +54,10 @@ public class Shift {
         public int getDock() {
                 return dock;
         }
-        public int getLunchstart() {
+        public LocalTime getLunchstart() {
                 return lunchstart;
         }
-        public int getLunchstop() {
+        public LocalTime getLunchstop() {
                 return lunchstop;
         }
         public int getLunchdeduct() {
