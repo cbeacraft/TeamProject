@@ -21,10 +21,8 @@ public class TASDatabase{
    String server = ("jdbc:mysql://localhost/TAS_FA18");
    String username = "root";
    String password = "96b3812W";
-   
-
-
     
+    public Connection initiateConnection() throws SQLException{
 
         try
         {
@@ -33,6 +31,7 @@ public class TASDatabase{
 
             /* Open Connection */
             conn = DriverManager.getConnection(server, username, password);
+            return conn;
         }
 
         catch (InstantiationException ex) 
@@ -47,41 +46,39 @@ public class TASDatabase{
         {
             Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        return conn;
+    }
 
     //Punch Method
     public Punch getPunch(int a)
     {
+        Punch punch = null;
 
-        if (conn != null) 
+        try
         {
-            Punch punch = null;
+            conn = initiateConnection();
+            String  query = "SELECT *, UNIX_TIMESTAMP(originaltimestamp) * 1000 AS ts FROM punch WHERE id =" + a;
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(query);
 
-            try
+             while (rs.next())
             {
-                String  query = "SELECT *, UNIX_TIMESTAMP(originaltimestamp) * 1000 AS ts FROM punch WHERE id =" + a;
-                Statement st = conn.createStatement();
-                ResultSet rs = st.executeQuery(query);
+                int id = rs.getInt("id");
+                int terminalId = rs.getInt("terminalid");
+                String badgeId = rs.getString("badgeid");
+                long timeStamp = rs.getLong("ts");
+                int punchTypeId = rs.getInt("punchtypeid");
 
-                 while (rs.next())
-                 {
-                    int id = rs.getInt("id");
-                    int terminalId = rs.getInt("terminalid");
-                    String badgeId = rs.getString("badgeid");
-                    long timeStamp = rs.getLong("ts");
-                    int punchTypeId = rs.getInt("punchtypeid");
-                
-                    punch = new Punch(id, timeStamp, terminalId, badgeId, punchTypeId);
-                 }
-                  st.close();
-            } 
-            catch (SQLException ex) 
-            {
-                Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+                punch = new Punch(id, timeStamp, terminalId, badgeId, punchTypeId);
             }
-
+            st.close();
+            return punch;
+              
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return punch;
     }
 
@@ -89,29 +86,25 @@ public class TASDatabase{
     public Badge getBadge(int a)
     {
         Badge badge = null; 
-
-        if (conn != null) 
+        try
         {
-            try
-            {
-                String  query = "SELECT * FROM badge WHERE id =" + a;
-                Statement st = conn.createStatement();
-                ResultSet rs = st.executeQuery(query);
+            conn = initiateConnection();
+            String  query = "SELECT * FROM badge WHERE id =" + a;
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(query);
 
-                while (rs.next())
-                {
-                    String badgeId = rs.getString("id");
-                    String description = rs.getString("description");
-                    badge = new Badge(badgeId,description);
-                }
-
-              st.close();                      
-            }
-            catch (SQLException ex) 
+            while (rs.next())
             {
-              Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+                String badgeId = rs.getString("id");
+                String description = rs.getString("description");
+                badge = new Badge(badgeId,description);
             }
 
+          st.close();                      
+        }
+        catch (SQLException ex) 
+        {
+          Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return badge;   
@@ -120,85 +113,76 @@ public class TASDatabase{
     public Shift getShift(int a)
     {
        Shift shift = null;
+       try
+        {
+            conn = initiateConnection();
+            String  query = "SELECT * FROM shift WHERE id =" + a;
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(query);
 
-       if (conn != null) 
-       {
-           try
-           {
-               String  query = "SELECT * FROM shift WHERE id =" + a;
-               Statement st = conn.createStatement();
-               ResultSet rs = st.executeQuery(query);
+             while (rs.next())
+             {
+                 int id = rs.getInt("id");
+                 String description = rs.getString("description");
+                 Time start = rs.getTime("start");
+                 Time stop = rs.getTime("stop");
+                 int interval = rs.getInt("interval");
+                 int gracePeriod = rs.getInt("graceperiod");
+                 int dock = rs.getInt("dock");
+                 Time lunchStart = rs.getTime("lunchstart");
+                 Time lunchStop = rs.getTime("lunchstop");
+                 int lunchDeduct = rs.getInt("lunchdeduct");
+                 shift = new Shift(id, description, start, stop, interval, gracePeriod, dock, lunchStart, lunchStop, lunchDeduct);
+                 //having issues with above, may need Shift to accept some time types
+             }
 
-                while (rs.next())
-                {
-                    int id = rs.getInt("id");
-                    String description = rs.getString("description");
-                    Time start = rs.getTime("start");
-                    Time stop = rs.getTime("stop");
-                    int interval = rs.getInt("interval");
-                    int gracePeriod = rs.getInt("graceperiod");
-                    int dock = rs.getInt("dock");
-                    Time lunchStart = rs.getTime("lunchstart");
-                    Time lunchStop = rs.getTime("lunchstop");
-                    int lunchDeduct = rs.getInt("lunchdeduct");
-                    new Shift(id, description, start, stop, interval, gracePeriod, dock, lunchStart, lunchStop, lunchDeduct);
-                }
+             st.close();
+        }
 
-                st.close();
-           }
-
-           catch (SQLException ex) 
-           {
-             Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
-           }
-
-       }    
+        catch (SQLException ex) 
+        {
+          Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+        }    
 
        return shift;
     }
 
+    //is there a reason why we have 2 getShifts? Only difference are the parameter types
     public Shift getShift(Badge a)
     {
        Shift shift = null;
+        try {
+            conn = initiateConnection();
+            String  query = ("SELECT * FROM shift WHERE id =" + a.getId());
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(query);
 
+            while (rs.next())
+            {
+                int id = rs.getInt("id");
+                String description = rs.getString("description");
+                Time start = rs.getTime("start");
+                Time stop = rs.getTime("stop");
+                int interval = rs.getInt("interval");
+                int gracePeriod = rs.getInt("graceperiod");
+                int dock = rs.getInt("dock");
+                Time lunchStart = rs.getTime("lunchstart");
+                Time lunchStop = rs.getTime("lunchstop");
+                int lunchDeduct = rs.getInt("lunchdeduct");
 
-       if (conn != null) 
-       {
+                shift = new Shift(id, description, start, stop, interval, gracePeriod, dock, lunchStart, lunchStop, lunchDeduct);
+                //having issues with above, may need Shift to accept some time types
+            }
+            st.close();
+        } 
 
-           try {
-               String  query = ("SELECT * FROM shift WHERE id =" + a.getId());
-               Statement st = conn.createStatement();
-               ResultSet rs = st.executeQuery(query);
-
-               while (rs.next())
-               {
-                   int id = rs.getInt("id");
-                   String description = rs.getString("description");
-                   Time start = rs.getTime("start");
-                   Time stop = rs.getTime("stop");
-                   int interval = rs.getInt("interval");
-                   int gracePeriod = rs.getInt("graceperiod");
-                   int dock = rs.getInt("dock");
-                   Time lunchStart = rs.getTime("lunchstart");
-                   Time lunchStop = rs.getTime("lunchstop");
-                   int lunchDeduct = rs.getInt("lunchdeduct");
-
-                   shift = new Shift(id, description, start, stop, interval, gracePeriod, dock, lunchStart, lunchStop, lunchDeduct);
-               }
-               st.close();
-           } 
-
-           catch (SQLException ex) 
-           {
-               Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
-           }
-       }
-
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+        }
       return shift;
     }
-
-
-    }
+}
 
 
 
