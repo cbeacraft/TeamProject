@@ -8,197 +8,197 @@ import java.util.logging.Logger;
 
 public class TASDatabase{
 
- Connection conn = null;
- PreparedStatement pstSelect = null, pstUpdate = null;
- ResultSet resultset = null;
- ResultSetMetaData metadata = null;
+    Connection conn = null;
+    PreparedStatement pstSelect = null, pstUpdate = null;
+    ResultSet resultset = null;
+    ResultSetMetaData metadata = null;
 
- boolean hasresults;
- int resultCount, columnCount, updateCount = 0;
-    
+    boolean hasresults;
+    int resultCount, columnCount, updateCount = 0;
 
- /* Identify the Server */
-String server = ("jdbc:mysql://localhost/TAS_FA18");
-String username = "root";
-String password = "96b3812W";
+
+    /* Identify the Server */
+   String server = ("jdbc:mysql://localhost/TAS_FA18");
+   String username = "root";
+   String password = "96b3812W";
    
 
 
     
 
-try
-{
-    /* Load the MySQL JDBC Driver */
-    Class.forName("com.mysql.jdbc.Driver").newInstance();
-
-    /* Open Connection */
-    conn = DriverManager.getConnection(server, username, password);
-}
-
-catch (InstantiationException ex) 
-{
-    Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
-} 
-catch (IllegalAccessException ex) 
-{
-    Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
-}
-catch (ClassNotFoundException ex) 
-{
-    Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
-}
-
-    
-//Punch Method
-public Punch getPunch(int a)
-{
-
-    if (conn != null) 
-    {
-        Punch punch = null;
-        
         try
         {
-            String  query = "SELECT *, UNIX_TIMESTAMP(originaltimestamp) * 1000 AS ts FROM punch WHERE id =" + a;
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(query);
+            /* Load the MySQL JDBC Driver */
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
 
-             while (rs.next())
-             {
-                int id = rs.getInt("id");
-                int terminalId = rs.getInt("terminalid");
-                String badgeId = rs.getString("badgeid");
-                long timeStamp = rs.getLong("ts");
-                int punchTypeId = rs.getInt("punchtypeid");
-                punch = new Punch(id,terminalId, badgeId,timeStamp, punchTypeId);
-             }
-             
-              st.close();
+            /* Open Connection */
+            conn = DriverManager.getConnection(server, username, password);
+        }
+
+        catch (InstantiationException ex) 
+        {
+            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
         } 
-        catch (SQLException ex) 
+        catch (IllegalAccessException ex) 
+        {
+            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (ClassNotFoundException ex) 
         {
             Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }
-    
-    return punch;
-}
 
-//Badge Method
-public Badge getBadge(int a)
-{
-    Badge badge = null; 
-    
-    if (conn != null) 
+    //Punch Method
+    public Punch getPunch(int a)
     {
-        try
-        {
-            String  query = "SELECT * FROM badge WHERE id =" + a;
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(query);
 
-            while (rs.next())
+        if (conn != null) 
+        {
+            Punch punch = null;
+
+            try
             {
-                String badgeId = rs.getString("id");
-                String description = rs.getString("description");
-                badge = new Badge(badgeId,description);
+                String  query = "SELECT *, UNIX_TIMESTAMP(originaltimestamp) * 1000 AS ts FROM punch WHERE id =" + a;
+                Statement st = conn.createStatement();
+                ResultSet rs = st.executeQuery(query);
+
+                 while (rs.next())
+                 {
+                    int id = rs.getInt("id");
+                    int terminalId = rs.getInt("terminalid");
+                    String badgeId = rs.getString("badgeid");
+                    long timeStamp = rs.getLong("ts");
+                    int punchTypeId = rs.getInt("punchtypeid");
+                
+                    punch = new Punch(id, timeStamp, terminalId, badgeId, punchTypeId);
+                 }
+                  st.close();
+            } 
+            catch (SQLException ex) 
+            {
+                Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-          st.close();                      
         }
-        catch (SQLException ex) 
-        {
-          Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+
+        return punch;
     }
 
-    return badge;   
-}
+    //Badge Method
+    public Badge getBadge(int a)
+    {
+        Badge badge = null; 
 
-public Shift getShift(int a)
-{
-   Shift shift = null;
-   
-   if (conn != null) 
-   {
-       try
-       {
-           String  query = "SELECT * FROM shift WHERE id =" + a;
-           Statement st = conn.createStatement();
-           ResultSet rs = st.executeQuery(query);
-           
-            while (rs.next())
+        if (conn != null) 
+        {
+            try
             {
-                int id = rs.getInt("id");
-                String description = rs.getString("description");
-                Time start = rs.getTime("start");
-                Time stop = rs.getTime("stop");
-                int interval = rs.getInt("interval");
-                int gracePeriod = rs.getInt("graceperiod");
-                int dock = rs.getInt("dock");
-                Time lunchStart = rs.getTime("lunchstart");
-                Time lunchStop = rs.getTime("lunchstop");
-                int lunchDeduct = rs.getInt("lunchdeduct");
-                new Shift(id, description, start, stop, interval, gracePeriod, dock, lunchStart, lunchStop, lunchDeduct);
+                String  query = "SELECT * FROM badge WHERE id =" + a;
+                Statement st = conn.createStatement();
+                ResultSet rs = st.executeQuery(query);
+
+                while (rs.next())
+                {
+                    String badgeId = rs.getString("id");
+                    String description = rs.getString("description");
+                    badge = new Badge(badgeId,description);
+                }
+
+              st.close();                      
             }
-            
-            st.close();
-       }
-       
-       catch (SQLException ex) 
-       {
-         Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
-       }
-       
-   }    
-   
-   return shift;
-}
-                 
-public Shift getShift(Badge a)
-{
-   Shift shift = null;
-   
-   
-   if (conn != null) 
-   {
+            catch (SQLException ex) 
+            {
+              Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
-       try {
-           String  query = ("SELECT * FROM shift WHERE id =" + a.getId());
-           Statement st = conn.createStatement();
-           ResultSet rs = st.executeQuery(query);
-           
-           while (rs.next())
+        }
+
+        return badge;   
+    }
+
+    public Shift getShift(int a)
+    {
+       Shift shift = null;
+
+       if (conn != null) 
+       {
+           try
            {
-               int id = rs.getInt("id");
-               String description = rs.getString("description");
-               Time start = rs.getTime("start");
-               Time stop = rs.getTime("stop");
-               int interval = rs.getInt("interval");
-               int gracePeriod = rs.getInt("graceperiod");
-               int dock = rs.getInt("dock");
-               Time lunchStart = rs.getTime("lunchstart");
-               Time lunchStop = rs.getTime("lunchstop");
-               int lunchDeduct = rs.getInt("lunchdeduct");
-               
-               shift = new Shift(id, description, start, stop, interval, gracePeriod, dock, lunchStart, lunchStop, lunchDeduct);
+               String  query = "SELECT * FROM shift WHERE id =" + a;
+               Statement st = conn.createStatement();
+               ResultSet rs = st.executeQuery(query);
+
+                while (rs.next())
+                {
+                    int id = rs.getInt("id");
+                    String description = rs.getString("description");
+                    Time start = rs.getTime("start");
+                    Time stop = rs.getTime("stop");
+                    int interval = rs.getInt("interval");
+                    int gracePeriod = rs.getInt("graceperiod");
+                    int dock = rs.getInt("dock");
+                    Time lunchStart = rs.getTime("lunchstart");
+                    Time lunchStop = rs.getTime("lunchstop");
+                    int lunchDeduct = rs.getInt("lunchdeduct");
+                    new Shift(id, description, start, stop, interval, gracePeriod, dock, lunchStart, lunchStop, lunchDeduct);
+                }
+
+                st.close();
            }
-           st.close();
-       } 
-       
-       catch (SQLException ex) 
+
+           catch (SQLException ex) 
+           {
+             Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+           }
+
+       }    
+
+       return shift;
+    }
+
+    public Shift getShift(Badge a)
+    {
+       Shift shift = null;
+
+
+       if (conn != null) 
        {
-           Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+
+           try {
+               String  query = ("SELECT * FROM shift WHERE id =" + a.getId());
+               Statement st = conn.createStatement();
+               ResultSet rs = st.executeQuery(query);
+
+               while (rs.next())
+               {
+                   int id = rs.getInt("id");
+                   String description = rs.getString("description");
+                   Time start = rs.getTime("start");
+                   Time stop = rs.getTime("stop");
+                   int interval = rs.getInt("interval");
+                   int gracePeriod = rs.getInt("graceperiod");
+                   int dock = rs.getInt("dock");
+                   Time lunchStart = rs.getTime("lunchstart");
+                   Time lunchStop = rs.getTime("lunchstop");
+                   int lunchDeduct = rs.getInt("lunchdeduct");
+
+                   shift = new Shift(id, description, start, stop, interval, gracePeriod, dock, lunchStart, lunchStop, lunchDeduct);
+               }
+               st.close();
+           } 
+
+           catch (SQLException ex) 
+           {
+               Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+           }
        }
-   }
 
-  return shift;
-}
+      return shift;
+    }
 
-       
-}
+
+    }
 
 
 
