@@ -19,8 +19,8 @@ public class TASDatabase{
 
     /* Identify the Server */
    String server = ("jdbc:mysql://localhost/TAS_FA18");
-   String username = "root";
-   String password = "96b3812W";
+   String username = "tasuser";
+   String password = "teamc";
     
     public Connection initiateConnection() throws SQLException{
 
