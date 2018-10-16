@@ -117,9 +117,11 @@ public class TASDatabase{
         {
             conn = initiateConnection();
             String  query = "SELECT * FROM shift WHERE id =" + a;
+            //SELECT *, MINUTE(`start`) AS startminute, HOUR(`start`) AS starthour FROM shift;
+            // turn the time to int
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(query);
-
+            
              while (rs.next())
              {
                  int id = rs.getInt("id");
@@ -134,6 +136,7 @@ public class TASDatabase{
                  int lunchDeduct = rs.getInt("lunchdeduct");
                  shift = new Shift(id, description, start, stop, interval, gracePeriod, dock, lunchStart, lunchStop, lunchDeduct);
                  //having issues with above, may need Shift to accept some time types
+                 // create q default contructor to break up the above line
              }
 
              st.close();
