@@ -1,6 +1,7 @@
 package teamproject;
 
 import java.sql.*;
+import java.time.LocalTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -83,7 +84,7 @@ public class TASDatabase{
     }
 
     //Badge Method
-    public Badge getBadge(int a)
+    public Badge getBadge(String a)
     {
         Badge badge = null; 
         try
@@ -117,24 +118,34 @@ public class TASDatabase{
         {
             conn = initiateConnection();
             String  query = "SELECT * FROM shift WHERE id =" + a;
-            //SELECT *, MINUTE(`start`) AS startminute, HOUR(`start`) AS starthour FROM shift;
+            String startStopQuery = "SELECT *, MINUTE(`start`) AS startminute, HOUR(`start`) AS starthour, MINUTE(`stop`) AS stopminute, HOUR(`stop`) AS stophour FROM shift";
+            String lunchQuery = "SELECT *, MINUTE(`lunchstart`) AS lunchstartminute, HOUR(`lunchstart`) AS lunchstarthour, MINUTE(`lunchstop`) AS lunchstopminute, HOUR(`lunchstop`) AS lunchstophour FROM shift";
+            //MINUTE(`start`) AS startminute, HOUR(`start`) AS starthour FROM shift
             // turn the time to int
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(query);
+            Statement sta = conn.createStatement();
+            ResultSet rst = st.executeQuery(startStopQuery);
+            Statement start = conn.createStatement();
+            ResultSet rset = st.executeQuery(lunchQuery);
             
              while (rs.next())
              {
                  int id = rs.getInt("id");
                  String description = rs.getString("description");
-                 Time start = rs.getTime("start");
-                 Time stop = rs.getTime("stop");
+                 int startHour = rst.getInt("starthour");
+                 int stopHour = rst.getInt("stophour");
+                 int startMin = rst.getInt("startmin");
+                 int stopMin = rst.getInt("stopmin");
+                 int lunchStartHour = rset.getInt("starthour");
+                 int lunchStopHour = rset.getInt("stophour");
+                 int lunchStartMin = rset.getInt("startmin");
+                 int lunchStopMin = rset.getInt("stopmin");
                  int interval = rs.getInt("interval");
                  int gracePeriod = rs.getInt("graceperiod");
                  int dock = rs.getInt("dock");
-                 Time lunchStart = rs.getTime("lunchstart");
-                 Time lunchStop = rs.getTime("lunchstop");
                  int lunchDeduct = rs.getInt("lunchdeduct");
-                 shift = new Shift(id, description, start, stop, interval, gracePeriod, dock, lunchStart, lunchStop, lunchDeduct);
+                 shift = new Shift(id, description, startHour, startMin, stopHour, stopMin, interval, gracePeriod, dock, lunchStartHour,lunchStartMin, lunchStopHour, lunchStopMin, lunchDeduct);
                  //having issues with above, may need Shift to accept some time types
                  // create q default contructor to break up the above line
              }
@@ -157,24 +168,32 @@ public class TASDatabase{
         try {
             conn = initiateConnection();
             String  query = ("SELECT * FROM shift WHERE id =" + a.getId());
+            String startStopQuery = "SELECT *, MINUTE(`start`) AS startminute, HOUR(`start`) AS starthour, MINUTE(`stop`) AS stopminute, HOUR(`stop`) AS stophour FROM shift";
+            String lunchQuery = "SELECT *, MINUTE(`lunchstart`) AS lunchstartminute, HOUR(`lunchstart`) AS lunchstarthour, MINUTE(`lunchstop`) AS lunchstopminute, HOUR(`lunchstop`) AS lunchstophour FROM shift";
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(query);
+            Statement sta = conn.createStatement();
+            ResultSet rst = st.executeQuery(startStopQuery);
+            Statement start = conn.createStatement();
+            ResultSet rset = st.executeQuery(lunchQuery);
 
             while (rs.next())
             {
                 int id = rs.getInt("id");
-                String description = rs.getString("description");
-                Time start = rs.getTime("start");
-                Time stop = rs.getTime("stop");
-                int interval = rs.getInt("interval");
-                int gracePeriod = rs.getInt("graceperiod");
-                int dock = rs.getInt("dock");
-                Time lunchStart = rs.getTime("lunchstart");
-                Time lunchStop = rs.getTime("lunchstop");
-                int lunchDeduct = rs.getInt("lunchdeduct");
-
-                shift = new Shift(id, description, start, stop, interval, gracePeriod, dock, lunchStart, lunchStop, lunchDeduct);
-                //having issues with above, may need Shift to accept some time types
+                 String description = rs.getString("description");
+                 int startHour = rst.getInt("starthour");
+                 int stopHour = rst.getInt("stophour");
+                 int startMin = rst.getInt("startmin");
+                 int stopMin = rst.getInt("stopmin");
+                 int lunchStartHour = rset.getInt("starthour");
+                 int lunchStopHour = rset.getInt("stophour");
+                 int lunchStartMin = rset.getInt("startmin");
+                 int lunchStopMin = rset.getInt("stopmin");
+                 int interval = rs.getInt("interval");
+                 int gracePeriod = rs.getInt("graceperiod");
+                 int dock = rs.getInt("dock");
+                 int lunchDeduct = rs.getInt("lunchdeduct");
+                 shift = new Shift(id, description, startHour, startMin, stopHour, stopMin, interval, gracePeriod, dock, lunchStartHour,lunchStartMin, lunchStopHour, lunchStopMin, lunchDeduct);
             }
             st.close();
         } 
