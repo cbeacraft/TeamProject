@@ -2,6 +2,8 @@ package teamproject;
 
 import java.sql.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -214,6 +216,15 @@ public class TASDatabase{
        int terminalId = p.getTerminalid();
         
         return id;
+    }
+    
+    public ArrayList getDailyPunchList(Badge b, long ts) {
+	GregorianCalendar gc = new GregorianCalendar();
+	gc.setTimeInMillis(ts);
+        
+	ArrayList dailyPunchList = new ArrayList();
+	//dailyPunchList.add();
+	return dailyPunchList;
     }
 }
 
