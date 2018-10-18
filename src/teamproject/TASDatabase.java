@@ -186,7 +186,7 @@ public class TASDatabase{
       return shift;
     }
     
-    private int insertPunch(Punch p){
+    public int insertPunch(Punch p){
        long adjustedTime = p.getAdjustedtimestamp();
        String badgeId = p.getBadgeid();
        int id = p.getId();
