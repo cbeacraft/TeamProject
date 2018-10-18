@@ -185,6 +185,17 @@ public class TASDatabase{
         }
       return shift;
     }
+    
+    private int insertPunch(Punch p){
+       long adjustedTime = p.getAdjustedtimestamp();
+       String badgeId = p.getBadgeid();
+       int id = p.getId();
+       long originalTime = p.getOriginaltimestamp();
+       int punchTypeId = p.getPunchtypeid();
+       int terminalId = p.getTerminalid();
+        
+        return id;
+    }
 }
 
 
