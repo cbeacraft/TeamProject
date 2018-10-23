@@ -21,7 +21,7 @@ public class TASDatabase{
 
 
     /* Identify the Server */
-   String server = ("jdbc:mysql://localhost/TAS_FA18");
+   String server = ("jdbc:mysql://localhost/tas");
    String username = "tasuser";
    String password = "teamc";
     
@@ -92,7 +92,7 @@ public class TASDatabase{
         try
         {
             conn = initiateConnection();
-            String  query = "SELECT * FROM badge WHERE id =" + a;
+            String  query = "SELECT * FROM badge WHERE id ='" + a + "'";
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(query);
 
@@ -120,8 +120,8 @@ public class TASDatabase{
         {
             conn = initiateConnection();
             String  query = "SELECT * FROM shift WHERE id =" + a;
-            String startStopQuery = "SELECT *, MINUTE(`start`) AS startminute, HOUR(`start`) AS starthour, MINUTE(`stop`) AS stopminute, HOUR(`stop`) AS stophour FROM shift";
-            String lunchQuery = "SELECT *, MINUTE(`lunchstart`) AS lunchstartminute, HOUR(`lunchstart`) AS lunchstarthour, MINUTE(`lunchstop`) AS lunchstopminute, HOUR(`lunchstop`) AS lunchstophour FROM shift";
+            String startStopQuery = "SELECT *, MINUTE(`start`) AS startminute, HOUR(`start`) AS starthour, MINUTE(`stop`) AS stopminute, HOUR(`stop`) AS stophour FROM shift WHERE id =" + a;
+            String lunchQuery = "SELECT *, MINUTE(`lunchstart`) AS lunchstartminute, HOUR(`lunchstart`) AS lunchstarthour, MINUTE(`lunchstop`) AS lunchstopminute, HOUR(`lunchstop`) AS lunchstophour FROM shift WHERE id =" + a;
             //MINUTE(`start`) AS startminute, HOUR(`start`) AS starthour FROM shift
             // turn the time to int
             Statement st = conn.createStatement();
@@ -133,16 +133,19 @@ public class TASDatabase{
             
              while (rs.next())
              {
+                 rst.next();
+                 rset.next();
+                 
                  int id = rs.getInt("id");
                  String description = rs.getString("description");
                  int startHour = rst.getInt("starthour");
                  int stopHour = rst.getInt("stophour");
-                 int startMin = rst.getInt("startmin");
-                 int stopMin = rst.getInt("stopmin");
-                 int lunchStartHour = rset.getInt("starthour");
-                 int lunchStopHour = rset.getInt("stophour");
-                 int lunchStartMin = rset.getInt("startmin");
-                 int lunchStopMin = rset.getInt("stopmin");
+                 int startMin = rst.getInt("startminute");
+                 int stopMin = rst.getInt("stopminute");
+                 int lunchStartHour = rset.getInt("lunchstarthour");
+                 int lunchStopHour = rset.getInt("lunchstophour");
+                 int lunchStartMin = rset.getInt("lunchstartminute");
+                 int lunchStopMin = rset.getInt("lunchstopminute");
                  int interval = rs.getInt("interval");
                  int gracePeriod = rs.getInt("graceperiod");
                  int dock = rs.getInt("dock");
@@ -169,9 +172,9 @@ public class TASDatabase{
        Shift shift = null;
         try {
             conn = initiateConnection();
-            String  query = ("SELECT * FROM shift WHERE id =" + a.getId());
-            String startStopQuery = "SELECT *, MINUTE(`start`) AS startminute, HOUR(`start`) AS starthour, MINUTE(`stop`) AS stopminute, HOUR(`stop`) AS stophour FROM shift";
-            String lunchQuery = "SELECT *, MINUTE(`lunchstart`) AS lunchstartminute, HOUR(`lunchstart`) AS lunchstarthour, MINUTE(`lunchstop`) AS lunchstopminute, HOUR(`lunchstop`) AS lunchstophour FROM shift";
+            String  query = ("SELECT * FROM shift WHERE id ='" + a.getId() + "'" );
+            String startStopQuery = "SELECT *, MINUTE(`start`) AS startminute, HOUR(`start`) AS starthour, MINUTE(`stop`) AS stopminute, HOUR(`stop`) AS stophour FROM shift WHERE id ='" + a.getId() + "'";
+            String lunchQuery = "SELECT *, MINUTE(`lunchstart`) AS lunchstartminute, HOUR(`lunchstart`) AS lunchstarthour, MINUTE(`lunchstop`) AS lunchstopminute, HOUR(`lunchstop`) AS lunchstophour FROM shift WHERE id ='" + a.getId() + "'";
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(query);
             Statement sta = conn.createStatement();
@@ -185,12 +188,12 @@ public class TASDatabase{
                  String description = rs.getString("description");
                  int startHour = rst.getInt("starthour");
                  int stopHour = rst.getInt("stophour");
-                 int startMin = rst.getInt("startmin");
-                 int stopMin = rst.getInt("stopmin");
-                 int lunchStartHour = rset.getInt("starthour");
-                 int lunchStopHour = rset.getInt("stophour");
-                 int lunchStartMin = rset.getInt("startmin");
-                 int lunchStopMin = rset.getInt("stopmin");
+                 int startMin = rst.getInt("startminute");
+                 int stopMin = rst.getInt("stopminute");
+                 int lunchStartHour = rset.getInt("lunchstarthour");
+                 int lunchStopHour = rset.getInt("lunchstophour");
+                 int lunchStartMin = rset.getInt("lunchstartminute");
+                 int lunchStopMin = rset.getInt("lunchstopminute");
                  int interval = rs.getInt("interval");
                  int gracePeriod = rs.getInt("graceperiod");
                  int dock = rs.getInt("dock");
