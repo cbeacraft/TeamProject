@@ -31,6 +31,7 @@ public class Badge {
     
     @Override
     public String toString(){
-        return null;
+        String s = ("#" + id + " (" + description + ")");
+        return s;
     }
 }
