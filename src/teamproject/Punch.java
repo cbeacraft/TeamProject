@@ -1,4 +1,6 @@
 package teamproject;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 
 public class Punch {
 
@@ -66,5 +68,14 @@ public class Punch {
     public void setPunchtypeid(int punchtypeid) {
         this.punchtypeid = punchtypeid;
     }
-
+    
+    public String printOriginalTimestamp() {
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTimeInMillis(originaltimestamp);
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        String s = (sdf.format(gc.getTime()));
+        
+        return s;
+    }
 }
