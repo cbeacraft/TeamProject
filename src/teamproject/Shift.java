@@ -114,6 +114,14 @@ public class Shift {
         return lunchdeduct;
     }
     
+    @Override
+    public String toString() {
+        
+        return null;
+        
+    }
+    
+    
 }
 
 
