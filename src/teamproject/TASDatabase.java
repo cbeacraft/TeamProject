@@ -127,9 +127,9 @@ public class TASDatabase{
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(query);
             Statement sta = conn.createStatement();
-            ResultSet rst = st.executeQuery(startStopQuery);
+            ResultSet rst = sta.executeQuery(startStopQuery);
             Statement start = conn.createStatement();
-            ResultSet rset = st.executeQuery(lunchQuery);
+            ResultSet rset = start.executeQuery(lunchQuery);
             
              while (rs.next())
              {
@@ -175,9 +175,9 @@ public class TASDatabase{
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(query);
             Statement sta = conn.createStatement();
-            ResultSet rst = st.executeQuery(startStopQuery);
+            ResultSet rst = sta.executeQuery(startStopQuery);
             Statement start = conn.createStatement();
-            ResultSet rset = st.executeQuery(lunchQuery);
+            ResultSet rset = start.executeQuery(lunchQuery);
 
             while (rs.next())
             {
