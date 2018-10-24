@@ -1,6 +1,7 @@
 package teamproject;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -224,11 +225,41 @@ public class TASDatabase{
     public ArrayList getDailyPunchList(Badge b, long ts) {
 	GregorianCalendar gc = new GregorianCalendar();
 	gc.setTimeInMillis(ts);
-        
 	ArrayList dailyPunchList = new ArrayList();
-	//dailyPunchList.add();
+	
+	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+	String s1 = (sdf.format(gc.getTime()));
+
+	String s2 = s1 + " 23:59:59";
+	s1 = s1 + " 00:00:00";
+
+
+	Punch punch = null;
+
+	try {
+		conn = initiateConnection();
+		String  query = ("SELECT * FROM PUNCH WHERE badgeid = '" + b + "' AND originaltimestamp >= '" + s1 + "' AND originaltimestamp <= '" + s2 + "'");
+		Statement st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		
+		while (rs.next()) {
+			int id = rs.getInt("id");
+			int terminalId = rs.getInt("terminalid");
+			String badgeId = rs.getString("badgeid");
+			long timeStamp = rs.getlong("ts");
+			int punchTypeId = rs.getInt("punchtypeid");
+
+			punch = new Punch(id, timeStamp, terminalId, badgeId, punchTypeId);
+			dailyPunchList.add(punch);
+			}
+		st.close();
+		}
+	catch (SQLException ex) {
+		Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		
 	return dailyPunchList;
-    }
+	}
 }
 
 
