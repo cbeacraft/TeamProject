@@ -246,7 +246,7 @@ public class TASDatabase{
 			int id = rs.getInt("id");
 			int terminalId = rs.getInt("terminalid");
 			String badgeId = rs.getString("badgeid");
-			long timeStamp = rs.getlong("ts");
+			long timeStamp = rs.getLong("ts");
 			int punchTypeId = rs.getInt("punchtypeid");
 
 			punch = new Punch(id, timeStamp, terminalId, badgeId, punchTypeId);
