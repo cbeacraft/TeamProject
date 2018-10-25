@@ -1,5 +1,9 @@
 package teamproject;
+import java.text.SimpleDateFormat;
 import java.time.LocalTime;
+import java.util.GregorianCalendar;
+import java.util.Date;
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 public class Shift {
 
@@ -116,8 +120,11 @@ public class Shift {
     
     @Override
     public String toString() {
+   
+        long shiftTime = (MINUTES.between(start, stop));
+        long lunchTime = (MINUTES.between(lunchstart, lunchstop));
         
-        return null;
+        return description + ": " + start + " - " + stop + " " + "(" + shiftTime + " minutes)" + "; " + "Lunch: " + lunchstart + " - " + lunchstop + " " + "(" + lunchTime + " minutes)";
         
     }
     
