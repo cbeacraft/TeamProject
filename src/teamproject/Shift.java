@@ -1,8 +1,5 @@
 package teamproject;
-import java.text.SimpleDateFormat;
 import java.time.LocalTime;
-import java.util.GregorianCalendar;
-import java.util.Date;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 public class Shift {
