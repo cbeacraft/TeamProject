@@ -194,13 +194,15 @@ public class TASDatabase{
     }
     
     public int insertPunch(Punch p){
-       //How do we use adjusted timestamp here? or do we use it? Also, how do I need to format in order to put in database?
-       long adjustedTime = p.getAdjustedtimestamp(); 
+       //How do we use adjusted timestamp here? or do we use it? Also, how do I need to format in order to put in database? 
        String badgeId = p.getBadgeid();
        int id = p.getId();
        long originalTime = p.getOriginaltimestamp();
        int punchTypeId = p.getPunchtypeid();
        int terminalId = p.getTerminalid();
+       
+       Timestamp ti = new Timestamp(originalTime);
+       
        
        try{
            conn = initiateConnection();
@@ -210,7 +212,7 @@ public class TASDatabase{
            preparedStatement.setInt(1, id);
            preparedStatement.setInt(2, terminalId);
            preparedStatement.setString(3, badgeId);
-           preparedStatement.setTimestamp(4, originalTime);
+           preparedStatement.setTimestamp(4, ti);
            preparedStatement.setInt(5, punchTypeId);
            preparedStatement.executeUpdate();
            
