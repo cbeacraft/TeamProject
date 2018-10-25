@@ -173,34 +173,16 @@ public class TASDatabase{
        Shift shift = null;
         try {
             conn = initiateConnection();
-            String  query = ("SELECT * FROM shift WHERE id ='" + a.getId() + "'" );
-            String startStopQuery = "SELECT *, MINUTE(`start`) AS startminute, HOUR(`start`) AS starthour, MINUTE(`stop`) AS stopminute, HOUR(`stop`) AS stophour FROM shift WHERE id ='" + a.getId() + "'";
-            String lunchQuery = "SELECT *, MINUTE(`lunchstart`) AS lunchstartminute, HOUR(`lunchstart`) AS lunchstarthour, MINUTE(`lunchstop`) AS lunchstopminute, HOUR(`lunchstop`) AS lunchstophour FROM shift WHERE id ='" + a.getId() + "'";
+            String  shiftIdQuery = ("SELECT shiftid FROM employee e WHERE badgeid = '" + a.getId() + "'" );
             Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(query);
-            Statement sta = conn.createStatement();
-            ResultSet rst = sta.executeQuery(startStopQuery);
-            Statement start = conn.createStatement();
-            ResultSet rset = start.executeQuery(lunchQuery);
-
+            ResultSet rs = st.executeQuery(shiftIdQuery);
+            
             while (rs.next())
-            {
-                int id = rs.getInt("id");
-                 String description = rs.getString("description");
-                 int startHour = rst.getInt("starthour");
-                 int stopHour = rst.getInt("stophour");
-                 int startMin = rst.getInt("startminute");
-                 int stopMin = rst.getInt("stopminute");
-                 int lunchStartHour = rset.getInt("lunchstarthour");
-                 int lunchStopHour = rset.getInt("lunchstophour");
-                 int lunchStartMin = rset.getInt("lunchstartminute");
-                 int lunchStopMin = rset.getInt("lunchstopminute");
-                 int interval = rs.getInt("interval");
-                 int gracePeriod = rs.getInt("graceperiod");
-                 int dock = rs.getInt("dock");
-                 int lunchDeduct = rs.getInt("lunchdeduct");
-                 shift = new Shift(id, description, startHour, startMin, stopHour, stopMin, interval, gracePeriod, dock, lunchStartHour,lunchStartMin, lunchStopHour, lunchStopMin, lunchDeduct);
-            }
+             {
+                 int shiftId = rs.getInt("shiftid");
+                 shift = getShift(shiftId);
+             }
+           
             st.close();
         } 
 
@@ -228,7 +210,7 @@ public class TASDatabase{
            preparedStatement.setInt(1, id);
            preparedStatement.setInt(2, terminalId);
            preparedStatement.setString(3, badgeId);
-           preparedStatement.setLong(4, originalTime);
+           preparedStatement.setTimestamp(4, originalTime);
            preparedStatement.setInt(5, punchTypeId);
            preparedStatement.executeUpdate();
            
