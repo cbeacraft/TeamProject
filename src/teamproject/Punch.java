@@ -73,9 +73,9 @@ public class Punch {
         GregorianCalendar gc = new GregorianCalendar();
         gc.setTimeInMillis(originaltimestamp);
         
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        String s = (sdf.format(gc.getTime()));
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MM/dd/yyyy HH:mm:ss");
+        String s = (sdf.format(gc.getTime()).toUpperCase());
         
-        return s;
+        return ("#" + badgeid + " CLOCKED " + ": " + " " + s);
     }
 }
