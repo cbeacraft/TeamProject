@@ -221,9 +221,15 @@ public class TASDatabase{
        
        try{
            conn = initiateConnection();
-           String insertPunchQuery = "";
-           Statement st = conn.createStatement();
-           ResultSet rs = st.executeQuery(insertPunchQuery);
+           String insertPunchQuery = "INSERT INTO punch (id, terminalid, badgeid, originaltimestamp, punchtypeid)" + 
+                   "VALUES (?, ?, ?, ?, ?)";
+           PreparedStatement preparedStatement = conn.prepareStatement(insertPunchQuery);
+           preparedStatement.setInt(1, id);
+           preparedStatement.setInt(2, terminalId);
+           preparedStatement.setString(3, badgeId);
+           preparedStatement.setLong(4, originalTime);
+           preparedStatement.setInt(5, punchTypeId);
+           preparedStatement.executeUpdate();
            
        }
        catch (SQLException ex) 
