@@ -4,6 +4,7 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -226,22 +227,30 @@ public class TASDatabase{
     }
     
     public ArrayList getDailyPunchList(Badge b, long ts) {
-	GregorianCalendar gc = new GregorianCalendar();
-	gc.setTimeInMillis(ts);
+	GregorianCalendar ts1 = new GregorianCalendar();
+	ts1.setTimeInMillis(ts);
+        ts1.set(Calendar.HOUR, 0);
+        ts1.set(Calendar.MINUTE, 0);
+        ts1.set(Calendar.SECOND, 0);
+        
+        GregorianCalendar ts2 = new GregorianCalendar();
+	ts2.setTimeInMillis(ts);
+        ts2.set(Calendar.HOUR, 23);
+        ts2.set(Calendar.MINUTE, 59);
+        ts2.set(Calendar.SECOND, 59);
+        
 	ArrayList dailyPunchList = new ArrayList();
 	
-	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-	String s1 = (sdf.format(gc.getTime()));
+	//SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+	//String s1 = (sdf.format(gc.getTime()));
 
-	String s2 = s1 + " 23:59:59";
-	s1 = s1 + " 00:00:00";
 
 
 	Punch punch = null;
 
 	try {
 		conn = initiateConnection();
-		String  query = ("SELECT * FROM PUNCH WHERE badgeid = '" + b + "' AND originaltimestamp >= '" + s1 + "' AND originaltimestamp <= '" + s2 + "'");
+		String  query = ("SELECT *, UNIX_TIMESTAMP(originaltimestamp) * 1000 AS ts FROM punch WHERE ts >=" + ts1 + " AND ts <= " + ts2 + " AND badgeid = '" + b.getId() + "' ORDER BY originaltimestamp");
 		Statement st = conn.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		
