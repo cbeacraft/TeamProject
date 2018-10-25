@@ -74,8 +74,24 @@ public class Punch {
         gc.setTimeInMillis(originaltimestamp);
         
         SimpleDateFormat sdf = new SimpleDateFormat("EEE MM/dd/yyyy HH:mm:ss");
-        String s = (sdf.format(gc.getTime()).toUpperCase());
+        String time = (sdf.format(gc.getTime()).toUpperCase());
         
-        return ("#" + badgeid + " CLOCKED " + ": " + " " + s);
+        int type = punchtypeid;
+        String status;
+        
+        switch (type) {
+            case 0:
+                status = " CLOCKED OUT: ";
+                break;
+            case 1:
+                status = " CLOCKED IN: ";
+                break;
+            default:
+                status = " TIMED OUT: ";
+                break;
+        }
+        
+        return ("#" + badgeid + status + time);
+    
     }
 }
