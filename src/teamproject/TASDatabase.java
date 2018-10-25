@@ -212,7 +212,8 @@ public class TASDatabase{
     }
     
     public int insertPunch(Punch p){
-       long adjustedTime = p.getAdjustedtimestamp();
+       //How do we use adjusted timestamp here? or do we use it? Also, how do I need to format in order to put in database?
+       long adjustedTime = p.getAdjustedtimestamp(); 
        String badgeId = p.getBadgeid();
        int id = p.getId();
        long originalTime = p.getOriginaltimestamp();
