@@ -10,6 +10,7 @@ public class Punch {
     private int terminalid;
     private String badgeid;
     private int punchtypeid;
+    private Badge badge;
 
     //Constructor
     public Punch(int id, long originaltimestamp, int terminalid, String badgeid, int punchtypeid) {
@@ -18,6 +19,11 @@ public class Punch {
         this.adjustedtimestamp = adjustedtimestamp;
         this.terminalid = terminalid;
         this.badgeid = badgeid;
+        this.punchtypeid = punchtypeid;
+    }
+    public Punch(Badge badge, int terminalid, int punchtypeid) {
+        this.badge = badge;
+        this.terminalid = terminalid;
         this.punchtypeid = punchtypeid;
     }
     //Getter Methods
