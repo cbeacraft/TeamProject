@@ -217,8 +217,20 @@ public class TASDatabase{
        long originalTime = p.getOriginaltimestamp();
        int punchTypeId = p.getPunchtypeid();
        int terminalId = p.getTerminalid();
-        
-        return id;
+       
+       try{
+           conn = initiateConnection();
+           String insertPunchQuery = "";
+           Statement st = conn.createStatement();
+           ResultSet rs = st.executeQuery(insertPunchQuery);
+           
+       }
+       catch (SQLException ex) 
+       {
+           Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+       }
+       
+       return id;
     }
     
     public ArrayList getDailyPunchList(Badge b, long ts) {
