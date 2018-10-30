@@ -22,7 +22,7 @@ public class Feature2 {
     
     @Test
     public void testInsertCheckPunch() {
-		
+        
         /* Create New Punch Object */
 
         Punch p1 = new Punch(db.getBadge("021890C0"), 101, 1);
