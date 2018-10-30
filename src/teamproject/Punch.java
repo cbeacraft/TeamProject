@@ -25,6 +25,9 @@ public class Punch {
         this.badge = badge;
         this.terminalid = terminalid;
         this.punchtypeid = punchtypeid;
+        
+        GregorianCalendar gc = new GregorianCalendar();
+        this.originaltimestamp = gc.getTimeInMillis();
     }
     //Getter Methods
     public int getId() {
