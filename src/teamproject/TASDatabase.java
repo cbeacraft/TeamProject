@@ -199,27 +199,37 @@ public class TASDatabase{
     public int insertPunch(Punch p){
        //How do we use adjusted timestamp here? or do we use it? Also, how do I need to format in order to put in database? 
        String badgeId = p.getBadgeid();
-       int id = p.getId();
        long originalTime = p.getOriginaltimestamp();
        int punchTypeId = p.getPunchtypeid();
        int terminalId = p.getTerminalid();
+       int id = 0;
+       
        
        Timestamp ti = new Timestamp(originalTime);
        System.out.print(originalTime);
        
-       try{
-           conn = initiateConnection();
-           String insertPunchQuery = "INSERT INTO punch (id, terminalid, badgeid, originaltimestamp, punchtypeid)" + 
-                   "VALUES (?, ?, ?, ?, ?)";
-           PreparedStatement preparedStatement = conn.prepareStatement(insertPunchQuery);
-           preparedStatement.setInt(1, id);
-           preparedStatement.setInt(2, terminalId);
-           preparedStatement.setString(3, badgeId);
-           preparedStatement.setTimestamp(4, ti);
-           preparedStatement.setInt(5, punchTypeId);
-           preparedStatement.executeUpdate();
+        try{
+            conn = initiateConnection();
+            String insertPunchQuery = "INSERT INTO punch (terminalid, badgeid, originaltimestamp, punchtypeid)" + 
+                    "VALUES (?, ?, ?, ?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(insertPunchQuery);
+            preparedStatement.setInt(2, terminalId);
+            preparedStatement.setString(3, badgeId);
+            preparedStatement.setTimestamp(4, ti);
+            preparedStatement.setInt(5, punchTypeId);
+            preparedStatement.executeUpdate();
+
+            String retrievePunch = "SELECT FROM punch ORDER BY id DESC LIMIT 0,1";
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(retrievePunch);
+
+                while(rs.next())
+                {
+                 id = rs.getInt("id");
+                }
            
-       }
+           st.close();
+        }
        catch (SQLException ex) 
        {
            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
