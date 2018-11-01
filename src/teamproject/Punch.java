@@ -16,7 +16,7 @@ public class Punch {
     public Punch(int id, long originaltimestamp, int terminalid, String badgeid, int punchtypeid) {
         this.id = id;
         this.originaltimestamp = originaltimestamp;
-        this.adjustedtimestamp = adjustedtimestamp;
+        //this.adjustedtimestamp = adjustedtimestamp;
         this.terminalid = terminalid;
         this.badgeid = badgeid;
         this.punchtypeid = punchtypeid;

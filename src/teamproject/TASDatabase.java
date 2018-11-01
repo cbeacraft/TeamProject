@@ -62,7 +62,7 @@ public class TASDatabase{
         try
         {
             conn = initiateConnection();
-            String  query = "SELECT *, UNIX_TIMESTAMP(originaltimestamp) * 1000 AS ts FROM punch WHERE id =" + a;
+            String  query = "SELECT *, UNIX_TIMESTAMP(originaltimestamp) * 1000 AS ts FROM punch WHERE id = " + a;
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(query);
 
@@ -202,8 +202,12 @@ public class TASDatabase{
        int punchTypeId = p.getPunchtypeid();
        int terminalId = p.getTerminalid();
        int id = 0;
-       Timestamp ti = new Timestamp(originalTime);
+       //Timestamp ti = new Timestamp(new GregorianCalendar().getTimeInMillis());
        
+       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+       
+       GregorianCalendar gc = new GregorianCalendar();
+       gc.setTimeInMillis(originalTime);
        
        
         try{
@@ -213,7 +217,7 @@ public class TASDatabase{
             PreparedStatement preparedStatement = conn.prepareStatement(insertPunchQuery);
             preparedStatement.setInt(1, terminalId);
             preparedStatement.setString(2, badgeId);
-            preparedStatement.setTimestamp(3, ti);
+            preparedStatement.setString(3, sdf.format(gc.getTime()));
             preparedStatement.setInt(4, punchTypeId);
             preparedStatement.executeUpdate();
 
@@ -237,24 +241,25 @@ public class TASDatabase{
     }
     
     public ArrayList getDailyPunchList(Badge b, long ts) {
+        
 	GregorianCalendar ts1 = new GregorianCalendar();
 	ts1.setTimeInMillis(ts);
-        ts1.set(Calendar.HOUR, 0);
+        ts1.set(Calendar.HOUR_OF_DAY, 0);
         ts1.set(Calendar.MINUTE, 0);
         ts1.set(Calendar.SECOND, 0);
         
         GregorianCalendar ts2 = new GregorianCalendar();
 	ts2.setTimeInMillis(ts);
-        ts2.set(Calendar.HOUR, 23);
+        ts2.set(Calendar.HOUR_OF_DAY, 23);
         ts2.set(Calendar.MINUTE, 59);
         ts2.set(Calendar.SECOND, 59);
         
 	ArrayList dailyPunchList = new ArrayList();
-	
-	//SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-	//String s1 = (sdf.format(gc.getTime()));
-
-
+        
+        /*SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        
+        System.err.println(sdf.format(ts1.getTime()) + ": " + ts1.getTimeInMillis());
+        System.err.println(sdf.format(ts2.getTime()) + ": " + ts2.getTimeInMillis());*/
 
 	Punch punch = null;
 
