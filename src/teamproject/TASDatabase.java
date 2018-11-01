@@ -213,15 +213,16 @@ public class TASDatabase{
             String insertPunchQuery = "INSERT INTO punch (terminalid, badgeid, originaltimestamp, punchtypeid)" + 
                     "VALUES (?, ?, ?, ?)";
             PreparedStatement preparedStatement = conn.prepareStatement(insertPunchQuery);
-            preparedStatement.setInt(2, terminalId);
-            preparedStatement.setString(3, badgeId);
-            preparedStatement.setTimestamp(4, ti);
-            preparedStatement.setInt(5, punchTypeId);
+            preparedStatement.setInt(1, terminalId);
+            preparedStatement.setString(2, badgeId);
+            preparedStatement.setTimestamp(3, ti);
+            preparedStatement.setInt(4, punchTypeId);
             preparedStatement.executeUpdate();
 
-            String retrievePunch = "SELECT FROM punch ORDER BY id DESC LIMIT 0,1";
+            String retrievePunch = "SELECT * FROM punch ORDER BY id DESC LIMIT 0,1";
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(retrievePunch);
+            System.out.println("00000" + retrievePunch);
 
                 while(rs.next())
                 {
