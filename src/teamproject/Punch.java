@@ -25,6 +25,7 @@ public class Punch {
         this.badge = badge;
         this.terminalid = terminalid;
         this.punchtypeid = punchtypeid;
+        this.badgeid = badge.getId();
         
         GregorianCalendar gc = new GregorianCalendar();
         this.originaltimestamp = gc.getTimeInMillis();
@@ -65,10 +66,12 @@ public class Punch {
     public String getBadgeid() {
         return badgeid;
     }
+    
 
     public void setBadgeid(String badgeid) {
-        this.badgeid = badgeid;
+            this.badgeid = badgeid;
     }
+
 
     public int getPunchtypeid() {
         return punchtypeid;
