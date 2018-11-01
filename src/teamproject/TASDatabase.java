@@ -63,7 +63,6 @@ public class TASDatabase{
         {
             conn = initiateConnection();
             String  query = "SELECT *, UNIX_TIMESTAMP(originaltimestamp) * 1000 AS ts FROM punch WHERE id =" + a;
-            System.out.println(query);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(query);
 
@@ -203,10 +202,9 @@ public class TASDatabase{
        int punchTypeId = p.getPunchtypeid();
        int terminalId = p.getTerminalid();
        int id = 0;
-       
-       
        Timestamp ti = new Timestamp(originalTime);
-       System.out.print(originalTime);
+       
+       
        
         try{
             conn = initiateConnection();
@@ -219,10 +217,9 @@ public class TASDatabase{
             preparedStatement.setInt(4, punchTypeId);
             preparedStatement.executeUpdate();
 
-            String retrievePunch = "SELECT * FROM punch ORDER BY id DESC LIMIT 0,1";
+            String retrievePunch = "SELECT * FROM punch ORDER BY id DESC LIMIT 1";
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(retrievePunch);
-            System.out.println("00000" + retrievePunch);
 
                 while(rs.next())
                 {
@@ -256,8 +253,7 @@ public class TASDatabase{
 	
 	//SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 	//String s1 = (sdf.format(gc.getTime()));
-        System.out.println("00-00: " + ts1.getTimeInMillis());
-        System.out.println("2359: " + ts2.getTimeInMillis());
+
 
 
 	Punch punch = null;
@@ -266,7 +262,7 @@ public class TASDatabase{
 		conn = initiateConnection();
 		String  query = ("SELECT *, UNIX_TIMESTAMP(originaltimestamp) * 1000 AS ts FROM punch WHERE badgeid = '" + b.getId() + "' HAVING ts >=" + ts1.getTimeInMillis() + " AND ts <= " + ts2.getTimeInMillis() + " ORDER BY originaltimestamp");
 		Statement st = conn.createStatement();
-                System.out.println(query);
+               
 		ResultSet rs = st.executeQuery(query);
 		
 		while (rs.next()) {
