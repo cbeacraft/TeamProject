@@ -1,4 +1,7 @@
-package tas_fa18;
+import teamproject.Shift;
+import teamproject.TASDatabase;
+import teamproject.Punch;
+import teamproject.Badge;
 
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -93,7 +96,7 @@ public class Feature3 {
         assertEquals("#08D01475 CLOCKED IN: TUE 09/18/2018 12:00:00 (Shift Start)", p1.printAdjustedTimestamp());
         
         assertEquals("#08D01475 CLOCKED OUT: TUE 09/18/2018 21:30:27", p2.printOriginalTimestamp());
-        assertEquals("#08D01475 CLOCKED OUT: TUE 09/18/2018 21:30:27 (None)", p2.printAdjustedTimestamp());
+        assertEquals("#08D01475 CLOCKED OUT: TUE 09/18/2018 21:30:00 (None)", p2.printAdjustedTimestamp());
         
     }
     
