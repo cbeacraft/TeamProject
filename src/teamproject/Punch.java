@@ -125,7 +125,7 @@ public class Punch {
         GregorianCalendar adjustedTime = new GregorianCalendar; // holds the adjusted time according to the shift rules
         */
           
-        //a at the front of variable identifies as original or actual, b at the front identifies as adjusted
+        //a at the front of variable identifies as or actual as opposed to expected
         
         SimpleDateFormat sdf = new SimpleDateFormat("EEE MM/dd/yyyy HH:mm:ss");
         //String time = (sdf.format(gc.getTime()).toUpperCase());
@@ -133,7 +133,7 @@ public class Punch {
         //start of shift times
         long shiftStart = Long.parseLong(sdf.format(s.getStart()));
         long aShiftStart = Long.parseLong(sdf.format(originaltimestamp));
-        long adjustment;
+        
         //end of shift times
         long shiftStop = Long.parseLong(sdf.format(s.getStop()));
         long aShiftStop = Long.parseLong(sdf.format(originaltimestamp));
@@ -143,6 +143,9 @@ public class Punch {
         //end of lunch times
         long lunchStop = Long.parseLong(sdf.format(s.getLunchstop()));
         long aLunchStop = Long.parseLong(sdf.format(originaltimestamp));
+        
+        //variable to hold new timestamp
+        long adjustment;
 
         //minutes*seconds*1000 to put into milliseconds
         long interval = ((s.getInterval()*60)+59)*1000;
@@ -155,8 +158,7 @@ public class Punch {
         
         //is weekend?
         boolean weekend = false;
-        
-        
+                
         SimpleDateFormat sdw = new SimpleDateFormat("EEE");
         String sW = sdf.format(originaltimestamp);
         
@@ -164,16 +166,6 @@ public class Punch {
             weekend = true;
         }
 
-        //dock occurs when a punch is outside of the grace window but not inside the interval round windows
-        
-        //initialize all GC objects
-
-/*INTERVAL (15 min)
-  if punchTypeId == 1 && time < shiftStart-00:15:01 && time > shiftStart roll back time to shiftStart
-  if punchTypeId == 0 && time > shiftStop-00:15:01 && time < shiftStop roll back time to shiftStop
-  if punchTypeId == 0 && time < lunchStart-00:15:01 && time > lunchStart roll back time to lunchStart
-  if punchTypeId == 1 && time > lunchStop-00:15:01 && time < lunchStop roll back time to lunchStop
-*/
         if (punchtypeid == 1 && weekend != true){ //needs a means of knowing wether or not to check shift or lunch
             //shift
             if (aShiftStart > shiftStart - interval && aShiftStart <= shiftStart){ //clock in early
@@ -233,12 +225,6 @@ public class Punch {
         //Interval round
         if (punchtypeid == 1){
             if (aShiftStart > shiftStart + dock){ //clock in more than 15 minutes late
-                        /*
-                          account for late punches which are 15+ minutes late such that any punch that is in the first half of a 15 minute interval is rolled back to the beginning of that interval while any in the second half is rolled to the beginning of the next
-                        */
-
-                        //theory:
-                        
                 long c = (aShiftStart-shiftStart)/(dock/2);
                 //assign a long to hold difference between actual and official start as a number of half intervals
 
@@ -311,31 +297,5 @@ public class Punch {
                 }
             }*/ //Does this apply to Lunch?
         }
-
-
-        /*GRACE PERIOD (5 min)
-          if punchTypeId == 1 && time < shiftStart-00:05:01 && time > shiftStart roll back time to shiftStart
-          if punchTypeId == 0 && time > shiftStop-00:05:01 && time < shiftStop roll back time to shiftStop
-          if punchTypeId == 1 && time < lunchStart-00:05:01 && time > lunchStart roll back time to lunchStart
-          if punchTypeId == 0 && time > lunchStop-00:05:01 && time < lunchStop roll back time to lunchStop
-        */
-
-        /*DOCK (15 min)
-          if punchTypeId == 1 && time > shiftStart+00:05:01 && time < shiftStart+00:15:00 roll time to shiftStar+00:15:00
-          if punchTypeId == 0 && time < shiftStop-00:05:01 && time > shiftStop-00:15:00 roll back time to shiftStop-00:15:00
-          if punchTypeId == 1 && time > lunchStart-00:05:01 && time < lunchStart+00:15:00 roll back time to lunchStart+00:15:00
-          if punchTypeId == 0 && time < lunchStop-00:05:01 && time > lunchStop-00:15:00 roll back time to lunchStop-00:15:00
-        */
-
-        /*NONE (if clock in/out falls outside these windows)  
-          roll to previous 15 minute window when less than 00:07:31 into a new quarter hour.
-                roll time to		if	current time is
-                shiftStart+00:15:00	if	shiftStart+00:15:01 < time < shiftStart+00:22:30
-                shiftStart+00:30:00	if	shiftStart+00:22:31 < time < shiftStart+00:37:30
-                shiftStart+00:45:00	if	shiftStart+00:37:31 < time < shiftStart+00:52:30
-                shiftStart+01:00:00	if	shiftStart+00:52:31 < time < shiftStart+01:07:30
-        */
-
-        //constructing the code	
-        }
+    }
 }
