@@ -115,7 +115,7 @@ public class Punch {
     
     }
 
-    public void adjustShift(Shift s) {
+    public void adjust(Shift s) {
         /*
         GregorianCalendar shfitStart = new GregorianCalendar; // Holds the shift start time
         GregorianCalendar shfitStop = new GregorianCalendar; // Holds the shift stop time
