@@ -15,6 +15,14 @@ public class Shift {
         private LocalTime lunchstart;
         private LocalTime lunchstop;
         private int lunchdeduct;
+        private int starthour;
+        private int startminute;
+        private int stophour;
+        private int stopminute;
+        private int lunchstarthour;
+        private int lunchstartminute;
+        private int lunchstophour;
+        private int lunchstopminute;
 
         //Constructor 
         public Shift(int id, String description, int starthour, int startminute, int stophour,
@@ -31,9 +39,44 @@ public class Shift {
             this.lunchstart = LocalTime.of(lunchstarthour, lunchstartminute);
             this.lunchstop = LocalTime.of(lunchstophour, lunchstopminute);
             this.lunchdeduct = lunchdeduct;
+            this.starthour = starthour;
 
         }
     //Setter Methods
+
+    public void setStarthour(int starthour) {
+        this.starthour = starthour;
+    }
+
+    public void setStartminute(int startminute) {
+        this.startminute = startminute;
+    }
+
+    public void setStophour(int stophour) {
+        this.stophour = stophour;
+    }
+
+    public void setStopminute(int stopminute) {
+        this.stopminute = stopminute;
+    }
+
+    public void setLunchstarthour(int lunchstarthour) {
+        this.lunchstarthour = lunchstarthour;
+    }
+
+    public void setLunchstartminute(int lunchstartminute) {
+        this.lunchstartminute = lunchstartminute;
+    }
+
+    public void setLunchstophour(int lunchstophour) {
+        this.lunchstophour = lunchstophour;
+    }
+
+    public void setLunchstopminute(int lunchstopminute) {
+        this.lunchstopminute = lunchstopminute;
+    }
+        
+        
     public void setId(int id) {
         this.id = id;
     }
@@ -75,6 +118,42 @@ public class Shift {
     }
     
     //Getter Mrthods
+     
+    public int getStartHour() {
+        
+        return starthour;
+    }
+
+    public int getStartminute() {
+        return startminute;
+    }
+
+    public int getStophour() {
+        return stophour;
+    }
+
+    public int getStopminute() {
+        return stopminute;
+    }
+
+    public int getLunchstarthour() {
+        return lunchstarthour;
+    }
+
+    public int getLunchstartminute() {
+        return lunchstartminute;
+    }
+
+    public int getLunchstophour() {
+        return lunchstophour;
+    }
+
+    public int getLunchstopminute() {
+        return lunchstopminute;
+    }
+    
+   
+    
     public int getId() {
         return id;
     }
