@@ -125,6 +125,32 @@ public class Punch {
     
     }
     
+    public String printAdjustedTimestamp() {
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTimeInMillis(adjustedtimestamp);
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MM/dd/yyyy HH:mm:ss");
+        String adjustedtime = (sdf.format(gc.getTime()).toUpperCase());
+        
+        int type = punchtypeid;
+        String status;
+        
+        switch (type) {
+            case 0:
+                status = " CLOCKED OUT: ";
+                break;
+            case 1:
+                status = " CLOCKED IN: ";
+                break;
+            default:
+                status = " TIMED OUT: ";
+                break;
+        }
+        
+        return ("#" + badgeid + status + adjustedtime + EventData);
+    
+    }
+    
     public void adjust(Shift s) {
         //Create calendar object for initial punch time
         GregorianCalendar OriginClock = new GregorianCalendar();
@@ -208,19 +234,19 @@ public class Punch {
         SimpleDateFormat sdf = new SimpleDateFormat("EEE MM/dd/yyyy HH:mm:ss");
         
         //Convert calendar objects to long int for comparison
-        long OriginPunch = Long.parseLong(sdf.format(OriginClock)); //When the employee made their punch
-        long StartWork = Long.parseLong(sdf.format(StartShift)); //Start of Shift
-        long EarlyStart = Long.parseLong(sdf.format(StartInterval)); //Arrive Early
-        long OkStart = Long.parseLong(sdf.format(StartGrace)); //Grace Arrival
-        long LateStart = Long.parseLong(sdf.format(StartDock)); //Late Arrival
-        long StopWork = Long.parseLong(sdf.format(StopShift)); //End of Shift
-        long LateStop = Long.parseLong(sdf.format(StopInterval)); //Late Leave
-        long OkStop = Long.parseLong(sdf.format(StopGrace)); //Grace Leave
-        long EarlyStop = Long.parseLong(sdf.format(StopDock)); //Early Leave
-        long BeginBreak = Long.parseLong(sdf.format(StartLunch)); //Start of Lunch
-        long CeaseBreak = Long.parseLong(sdf.format(StopLunch)); //End of Lucnh
+        long OriginPunch = (OriginClock.getTimeInMillis()); //When the employee made their punch
+        long StartWork = (StartShift.getTimeInMillis()); //Start of Shift
+        long EarlyStart = (StartInterval.getTimeInMillis()); //Arrive Early
+        long OkStart = (StartGrace.getTimeInMillis()); //Grace Arrival
+        long LateStart = (StartDock.getTimeInMillis()); //Late Arrival
+        long StopWork = (StopShift.getTimeInMillis()); //End of Shift
+        long LateStop = (StopInterval.getTimeInMillis()); //Late Leave
+        long OkStop = (StopGrace.getTimeInMillis()); //Grace Leave
+        long EarlyStop = (StopDock.getTimeInMillis()); //Early Leave
+        long BeginBreak = (StartLunch.getTimeInMillis()); //Start of Lunch
+        long CeaseBreak = (StopLunch.getTimeInMillis()); //End of Lucnh
         
-        long AdjustedOriginPunch = Long.parseLong(sdf.format(OriginClockSecondsReset)); //Original pucnh with seconds field set to zero, useful in IntervalRound
+        long AdjustedOriginPunch = (OriginClockSecondsReset.getTimeInMillis()); //Original pucnh with seconds field set to zero, useful in IntervalRound
         
         //Check weekend
         SimpleDateFormat sdw = new SimpleDateFormat("EEE");
@@ -262,7 +288,7 @@ public class Punch {
                         int i = (int)IntervalRoundMinutes;
                         GregorianCalendar AdjustedPunchIn = StartShift; //create new calendar object to make adjustments to the timestamp
                         AdjustedPunchIn.add(Calendar.MINUTE, i); //advance the time to the next interval
-                        adjustment = Long.parseLong(sdf.format(AdjustedPunchIn)); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                        adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                         setAdjustedtimestamp(adjustment);
                         setEventData("(Interval Round)");
                     }else{ //punch happened in first half of interval
@@ -275,7 +301,7 @@ public class Punch {
                         int i = (int)IntervalRoundMinutes;
                         GregorianCalendar AdjustedPunchIn = StartShift; //create new calendar object to make adjustments to the timestamp
                         AdjustedPunchIn.add(Calendar.MINUTE, i); //advance the time to the next interval
-                        adjustment = Long.parseLong(sdf.format(AdjustedPunchIn)); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                        adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                         setAdjustedtimestamp(adjustment);
                         setEventData("(Interval Round)");
                     }
@@ -319,7 +345,7 @@ public class Punch {
                         int i = (int)IntervalRoundMinutes;
                         GregorianCalendar AdjustedPunchIn = StopShift; //create new calendar object to make adjustments to the timestamp
                         AdjustedPunchIn.add(Calendar.MINUTE, -i); //advance the time to the next interval
-                        adjustment = Long.parseLong(sdf.format(AdjustedPunchIn)); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                        adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                         setAdjustedtimestamp(adjustment);
                         setEventData("(Interval Round)");
 
@@ -332,7 +358,7 @@ public class Punch {
                         int i = (int)IntervalRoundMinutes;
                         GregorianCalendar AdjustedPunchIn = StopShift; //create new calendar object to make adjustments to the timestamp
                         AdjustedPunchIn.add(Calendar.MINUTE, -i); //advance the time to the next interval
-                        adjustment = Long.parseLong(sdf.format(AdjustedPunchIn)); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                        adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                         setAdjustedtimestamp(adjustment);
                         setEventData("(Interval Round)");
                     }
@@ -365,7 +391,7 @@ public class Punch {
                 int i = (int)IntervalRoundMinutes;
                 GregorianCalendar AdjustedPunchIn = StartShift; //create new calendar object to make adjustments to the timestamp
                 AdjustedPunchIn.add(Calendar.MINUTE, i); //advance the time to the next interval
-                adjustment = Long.parseLong(sdf.format(AdjustedPunchIn)); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                 setAdjustedtimestamp(adjustment);
                 setEventData("(Interval Round)");
             }else{ //punch happened in first half of interval
@@ -378,7 +404,7 @@ public class Punch {
                 int i = (int)IntervalRoundMinutes;
                 GregorianCalendar AdjustedPunchIn = StartShift; //create new calendar object to make adjustments to the timestamp
                 AdjustedPunchIn.add(Calendar.MINUTE, i); //advance the time to the next interval
-                adjustment = Long.parseLong(sdf.format(AdjustedPunchIn)); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                 setAdjustedtimestamp(adjustment);
                 setEventData("(Interval Round)");
             }
@@ -399,7 +425,7 @@ public class Punch {
                 int i = (int)IntervalRoundMinutes;
                 GregorianCalendar AdjustedPunchIn = StopShift; //create new calendar object to make adjustments to the timestamp
                 AdjustedPunchIn.add(Calendar.MINUTE, -i); //advance the time to the next interval
-                adjustment = Long.parseLong(sdf.format(AdjustedPunchIn)); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                 setAdjustedtimestamp(adjustment);
                 setEventData("(Interval Round)");
                 
@@ -412,7 +438,7 @@ public class Punch {
                 int i = (int)IntervalRoundMinutes;
                 GregorianCalendar AdjustedPunchIn = StopShift; //create new calendar object to make adjustments to the timestamp
                 AdjustedPunchIn.add(Calendar.MINUTE, -i); //advance the time to the next interval
-                adjustment = Long.parseLong(sdf.format(AdjustedPunchIn)); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                 setAdjustedtimestamp(adjustment);
                 setEventData("(Interval Round)");
             }
