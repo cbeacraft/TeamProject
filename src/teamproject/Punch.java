@@ -226,7 +226,7 @@ public class Punch {
         SimpleDateFormat sdw = new SimpleDateFormat("EEE");
         String sW = sdw.format(originaltimestamp);
         
-        if ((sW == "SAT")||(sW == "SUN")){
+        if (("SAT".equals(sW))||("SUN".equals(sW))){
             weekend = true;
         }
         
@@ -243,6 +243,7 @@ public class Punch {
                     setEventData("(Shift Start)");
                 }else if (OriginPunch > OkStart && OriginPunch < LateStart){ //If clock in punch is between StartGrace and StartDock (Clock in between Grace period and Dock)
                     adjustment = LateStart;
+                    setAdjustedtimestamp(adjustment);
                     setEventData("(Shift Dock)");
                 }else { // Interval Round clock
                     if (PunchMin/s.getInterval() == 0){ //None Clause: PunchMin/Inter = 0 :: reset seconds field to 0
