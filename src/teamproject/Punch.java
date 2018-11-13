@@ -249,15 +249,17 @@ public class Punch {
         long AdjustedOriginPunch = (OriginClockSecondsReset.getTimeInMillis()); //Original pucnh with seconds field set to zero, useful in IntervalRound
         
         //Check weekend
-        SimpleDateFormat sdw = new SimpleDateFormat("EEE");
-        String sW = sdw.format(originaltimestamp);
+        GregorianCalendar ots = new GregorianCalendar();
+        ots.setTimeInMillis(originaltimestamp);
         
-        if (("SAT".equals(sW))||("SUN".equals(sW))){
-            weekend = true;
+        int otsDay = ots.get(Calendar.DAY_OF_WEEK);
+        
+        if (!((otsDay == Calendar.SATURDAY)||(otsDay == Calendar.SUNDAY))){
+            weekend = false;
         }
-        
+              
         //Begin Adjusting
-        if (punchtypeid == 1 && weekend != true){ //Clock in on a weekday
+        if (punchtypeid == 1 && !weekend){ //Clock in on a weekday
             if (TookLunch != true){ //need to add in TookLunch and logic to toggle it, but I am unsure where to do so -J. Moses
                 if (OriginPunch > EarlyStart && OriginPunch <= StartWork){ //If clock in punch is between StartInterval and StartShift (Clock in within interval)
                     adjustment = StartWork;
@@ -314,7 +316,7 @@ public class Punch {
                     setEventData("(Lunch Stop)");
                 }
             }
-        }else if (punchtypeid == 0 && weekend != true){ //Clock out on a week day
+        }else if (punchtypeid == 0 && !weekend){ //Clock out on a week day
             if (TookLunch == true){
                 if (OriginPunch < LateStop && OriginPunch >= StopWork){ //If clock out is between StopInterval and StopShift (clock out inside interval window)
                     adjustment = StopWork;
