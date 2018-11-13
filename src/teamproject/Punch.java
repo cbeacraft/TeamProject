@@ -124,12 +124,12 @@ public class Punch {
         OriginClockSecondsReset.set(Calendar.SECOND, 00);
         
         //create instance variables to hold time adjustments
-        int shiftStartHr; 
-        int shiftStartMin;
-        int lunchStartHr;
-        int lunchStartMin;
-        int shiftStopHr;
-        int shiftStopMin;
+        int shiftStartHr = s.getStartHour(); 
+        int shiftStartMin = s.getStartminute();     
+        int lunchStartHr = s.getLunchstarthour();
+        int lunchStartMin = s.getLunchstartminute();
+        int shiftStopHr = s.getStophour();
+        int shiftStopMin = s.getStopminute();
         double PunchMin = OriginClock.MINUTE;
         long adjustment; //Will be used for the adjusted timestamp as needed
         boolean weekend = false; //flag that checks for weekend
