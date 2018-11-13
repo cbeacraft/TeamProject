@@ -13,6 +13,7 @@ public class Punch {
     private int punchtypeid;
     private Badge badge;
     private String EventData;
+    private boolean TookLunch = false;
 
     //Constructor
     public Punch(int id, long originaltimestamp, int terminalid, String badgeid, int punchtypeid) {
@@ -88,6 +89,14 @@ public class Punch {
     
     public void setEventData(String EventData){
         this.EventData = EventData;
+    }
+    
+    public boolean getTookLunch() {
+        return TookLunch;
+    }
+    
+    public void setTookLunch(boolean TookLunch){
+        this.TookLunch = TookLunch;
     }
     
     public String printOriginalTimestamp() {
@@ -272,6 +281,7 @@ public class Punch {
                 }                
             }else { //Clocking in from lunch
                 if (OriginPunch < CeaseBreak && OriginPunch < BeginBreak){ //If clock in punch is duirng lunch window
+                    setTookLunch(false);
                     adjustment = CeaseBreak;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Lunch Stop)");
@@ -328,6 +338,7 @@ public class Punch {
                 }
             }else{ //Clocking out for lunch
                 if (OriginPunch < CeaseBreak && OriginPunch > BeginBreak){ //Clock out during lunch window
+                    setTookLunch(true);
                     adjustment = BeginBreak;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Lunch Start)");
