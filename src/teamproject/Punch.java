@@ -171,6 +171,7 @@ public class Punch {
         long Interval = s.getInterval();
         long Dock = s.getDock();
         long Grace = s.getGraceperiod();
+        boolean adjusted = false;
         
         // Extract and store hour and minute portion from our local time variables.
         /*
@@ -263,14 +264,17 @@ public class Punch {
             if (TookLunch != true){ //need to add in TookLunch and logic to toggle it, but I am unsure where to do so -J. Moses
                 if (OriginPunch > EarlyStart && OriginPunch <= StartWork){ //If clock in punch is between StartInterval and StartShift (Clock in within interval)
                     adjustment = StartWork;
+                    adjusted = true;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Shift Start)");
                 }else if (OriginPunch < OkStart && OriginPunch > StartWork){ //If clock in punch is between StartGrace abd StartShift (Clock in within grace period)
                     adjustment = StartWork;
+                    adjusted = true;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Shift Start)");
                 }else if (OriginPunch > OkStart && OriginPunch < LateStart){ //If clock in punch is between StartGrace and StartDock (Clock in between Grace period and Dock)
                     adjustment = LateStart;
+                    adjusted = true;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Shift Dock)");
                 }else { // Interval Round clock
@@ -311,6 +315,7 @@ public class Punch {
             }else { //Clocking in from lunch
                 if (OriginPunch < CeaseBreak && OriginPunch < BeginBreak){ //If clock in punch is duirng lunch window
                     setTookLunch(false);
+                    adjusted = true;
                     adjustment = CeaseBreak;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Lunch Stop)");
@@ -320,14 +325,17 @@ public class Punch {
             if (TookLunch == true){
                 if (OriginPunch < LateStop && OriginPunch >= StopWork){ //If clock out is between StopInterval and StopShift (clock out inside interval window)
                     adjustment = StopWork;
+                    adjusted = true;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Shift Stop)");
                 }else if (OriginPunch > OkStop && OriginPunch < StopWork){ //If clock out is between StopGrace and StopShift (clock out inside grace period)
                     adjustment = StopWork;
+                    adjusted = true;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Shift Stop)");
                 }else if (OriginPunch < OkStop && OriginPunch < EarlyStop){ //If clock out is between StopGrace and StopDock (clock out before grace period)
                     adjustment = EarlyStop;
+                    adjusted = true;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Shift Dock)");
                 }else{ //Interval Round Check
@@ -368,6 +376,7 @@ public class Punch {
             }else{ //Clocking out for lunch
                 if (OriginPunch < CeaseBreak && OriginPunch > BeginBreak){ //Clock out during lunch window
                     setTookLunch(true);
+                    adjusted = true;
                     adjustment = BeginBreak;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Lunch Start)");
@@ -376,7 +385,7 @@ public class Punch {
         }
 
         //Interval round
-        if (punchtypeid == 1){ //Clock in
+        if (punchtypeid == 1 && weekend && !adjusted){ //Clock in
             if (PunchMin/s.getInterval() == 0){ //None Clause: PunchMin/Inter = 0 :: reset seconds field to 0
                 adjustment = AdjustedOriginPunch;
                 setAdjustedtimestamp(adjustment);
