@@ -40,6 +40,14 @@ public class Shift {
             this.lunchstop = LocalTime.of(lunchstophour, lunchstopminute);
             this.lunchdeduct = lunchdeduct;
             this.starthour = starthour;
+            this.startminute = startminute;
+            this.lunchstarthour = lunchstarthour;
+            this.lunchstartminute = lunchstartminute;
+            this.lunchstophour = lunchstophour;
+            this.lunchstopminute = lunchstopminute;
+            this.stophour = stophour;
+            this.stopminute = stopminute;
+            
 
         }
     //Setter Methods
