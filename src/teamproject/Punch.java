@@ -147,15 +147,20 @@ public class Punch {
                 break;
         }
         
-        return ("#" + badgeid + status + adjustedtime + EventData);
+        return ("#" + badgeid + status + adjustedtime + ' ' + EventData);
     
     }
     
     public void adjust(Shift s) {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MM/dd/yyyy HH:mm:ss");
+        
+        
         //Create calendar object for initial punch time
         GregorianCalendar OriginClock = new GregorianCalendar();
         OriginClock.setTimeInMillis(originaltimestamp);
-        GregorianCalendar OriginClockSecondsReset = OriginClock;
+        
+        GregorianCalendar OriginClockSecondsReset = new GregorianCalendar();
+        OriginClockSecondsReset.setTimeInMillis(originaltimestamp);
         OriginClockSecondsReset.set(Calendar.SECOND, 00);
         
         //create instance variables to hold time adjustments
@@ -165,74 +170,141 @@ public class Punch {
         int lunchStartMin = s.getLunchstartminute();
         int shiftStopHr = s.getStophour();
         int shiftStopMin = s.getStopminute();
-        double PunchMin = OriginClock.MINUTE;
+        //double PunchMin = OriginClock.MINUTE;//why is this not updating with a new punch?
         long adjustment; //Will be used for the adjusted timestamp as needed
-        boolean weekend = false; //flag that checks for weekend
+        boolean weekend = true; //flag that checks for weekend
         long Interval = s.getInterval();
         long Dock = s.getDock();
         long Grace = s.getGraceperiod();
         boolean adjusted = false;
         
-        // Extract and store hour and minute portion from our local time variables.
-        /*
-        shiftStartHr
-        shiftStartMin
-        lunchStartHr
-        lunchStartMin
-        shiftStopHr
-        shiftStopMin
-        */
-        
         //Create a calendar object adjusted to shift start time
-        GregorianCalendar StartShift = OriginClock;
+        GregorianCalendar StartShift = new GregorianCalendar();
+        StartShift.setTimeInMillis(originaltimestamp);
         StartShift.set(Calendar.HOUR_OF_DAY, shiftStartHr);
         StartShift.set(Calendar.MINUTE, shiftStartMin);
         StartShift.set(Calendar.SECOND, 00);
         
         //Create a calendar object adjusted to shift stop time
-        GregorianCalendar StopShift = OriginClock;
+        GregorianCalendar StopShift = new GregorianCalendar();
+        StopShift.setTimeInMillis(originaltimestamp);
         StopShift.set(Calendar.HOUR_OF_DAY, shiftStopHr);
         StopShift.set(Calendar.MINUTE, shiftStopMin);
         StopShift.set(Calendar.SECOND, 00);
         
         //Create a calendar object adjusted to lunch start time
-        GregorianCalendar StartLunch = OriginClock;
+        GregorianCalendar StartLunch = new GregorianCalendar();
+        StartLunch.setTimeInMillis(originaltimestamp);
         StartLunch.set(Calendar.HOUR_OF_DAY, lunchStartHr);
         StartLunch.set(Calendar.MINUTE, lunchStartMin);
         StartLunch.set(Calendar.SECOND, 00);
         
         //Create a calendar object adjusted to lunch stop time
-        GregorianCalendar StopLunch = StartLunch;
+        GregorianCalendar StopLunch = new GregorianCalendar();
+        StopLunch.setTimeInMillis(originaltimestamp);
+        StopLunch.set(Calendar.HOUR_OF_DAY, lunchStartHr);
+        StopLunch.set(Calendar.MINUTE, lunchStartMin);
+        StopLunch.set(Calendar.SECOND, 00);
         StopLunch.add(Calendar.MINUTE, 30);
         
         //Create a calendar object adjusted to interval before start
-        GregorianCalendar StartInterval = StartShift;
+        GregorianCalendar StartInterval = new GregorianCalendar();
+        StartInterval.setTimeInMillis(originaltimestamp);
+        StartInterval.set(Calendar.HOUR_OF_DAY, shiftStartHr);
+        StartInterval.set(Calendar.MINUTE, shiftStartMin);
+        StartInterval.set(Calendar.SECOND, 00);
         StartInterval.add(Calendar.MINUTE, -(s.getInterval()));
         
         //Create a calendar object adjusted to interval before stop
-        GregorianCalendar StopInterval = StopShift;
+        GregorianCalendar StopInterval = new GregorianCalendar();
+        StopInterval.setTimeInMillis(originaltimestamp);
+        StopInterval.set(Calendar.HOUR_OF_DAY, shiftStopHr);
+        StopInterval.set(Calendar.MINUTE, shiftStopMin);
+        StopInterval.set(Calendar.SECOND, 00);
         StopInterval.add(Calendar.MINUTE, s.getInterval());
         
         //Create a calendar object adjusted to start grace
-        GregorianCalendar StartGrace = StartShift;
+        GregorianCalendar StartGrace = new GregorianCalendar();
+        StartGrace.setTimeInMillis(originaltimestamp);
+        StartGrace.set(Calendar.HOUR_OF_DAY, shiftStartHr);
+        StartGrace.set(Calendar.MINUTE, shiftStartMin);
+        StartGrace.set(Calendar.SECOND, 00);
         StartGrace.add(Calendar.MINUTE, s.getGraceperiod());
         
         //Create a calendar object adjusted to stop grace
-        GregorianCalendar StopGrace = StopShift;
+        GregorianCalendar StopGrace = new GregorianCalendar();
+        StopGrace.setTimeInMillis(originaltimestamp);
+        StopGrace.set(Calendar.HOUR_OF_DAY, shiftStopHr);
+        StopGrace.set(Calendar.MINUTE, shiftStopMin);
+        StopGrace.set(Calendar.SECOND, 00);
         StopGrace.add(Calendar.MINUTE, -(s.getGraceperiod()));
         
         //Create a calendar object adjusted to start dock
-        GregorianCalendar StartDock = StartShift;
+        GregorianCalendar StartDock = new GregorianCalendar();
+        StartDock.setTimeInMillis(originaltimestamp);
+        StartDock.set(Calendar.HOUR_OF_DAY, shiftStartHr);
+        StartDock.set(Calendar.MINUTE, shiftStartMin);
+        StartDock.set(Calendar.SECOND, 00);
         StartDock.add(Calendar.MINUTE, s.getDock());
         
         //Create a calendar object adjusted to stop dock
-        GregorianCalendar StopDock = StopShift;
+        GregorianCalendar StopDock = new GregorianCalendar();
+        StopDock.setTimeInMillis(originaltimestamp);
+        StopDock.set(Calendar.HOUR_OF_DAY, shiftStopHr);
+        StopDock.set(Calendar.MINUTE, shiftStopMin);
+        StopDock.set(Calendar.SECOND, 00);
         StopDock.add(Calendar.MINUTE, -(s.getDock()));
         
-        //a at the front of variable identifies as or actual as opposed to expected
+        //Create calendar object for adjusted clock in to use with interval round
+        GregorianCalendar AdjustedPunchIn = new GregorianCalendar();
+        AdjustedPunchIn.setTimeInMillis(originaltimestamp);
+        AdjustedPunchIn.set(Calendar.HOUR_OF_DAY, shiftStartHr);
+        AdjustedPunchIn.set(Calendar.MINUTE, shiftStartMin);
+        AdjustedPunchIn.set(Calendar.SECOND, 00);
         
-        //Create formatter to convert calendar object into long int     //Can we just pass a calendar through the parse method?
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE MM/dd/yyyy HH:mm:ss");
+        //Create a calendar object for adjusted clokc out to use with interval round
+        GregorianCalendar AdjustedPunchOut = new GregorianCalendar();
+        AdjustedPunchOut.setTimeInMillis(originaltimestamp);
+        AdjustedPunchOut.set(Calendar.HOUR_OF_DAY, shiftStopHr);
+        AdjustedPunchOut.set(Calendar.MINUTE, shiftStopMin);
+        AdjustedPunchOut.set(Calendar.SECOND, 00);
+        
+        double PunchMin = OriginClock.get(Calendar.MINUTE);
+        
+        /*
+        //DIAGNOSTIC RETURNS
+        System.err.println(s);
+        //Diagnostics for Construction
+        System.err.println("Insance Variables");
+        System.err.println("shiftStartHr:  " + shiftStartHr);
+        System.err.println("shiftStartMin: " + shiftStartMin);
+        System.err.println("lunchStartHr:  " + lunchStartHr);
+        System.err.println("lunchStartMin: " + lunchStartMin);
+        System.err.println("shiftStopHr:   " + shiftStopHr);
+        System.err.println("shiftStopMin:  " + shiftStopMin);
+        System.err.println("PunchMin:      " + PunchMin);
+        System.err.println("Interval:      " + Interval);
+        System.err.println("Grace:         " + Grace);
+        System.err.println("Dock:          " + Dock);
+        System.err.println("");
+        //Diagnostics for Time Stamps
+        System.err.println("Timestamp objects");
+        System.err.println("OriginClock:             " + sdf.format(OriginClock.getTimeInMillis()) + " " + OriginClock.getTimeInMillis());
+        System.err.println("OriginClockSecondsReset: " + sdf.format(OriginClockSecondsReset.getTimeInMillis()) + " " + OriginClockSecondsReset.getTimeInMillis());
+        System.err.println("StartShift:              " + sdf.format(StartShift.getTimeInMillis()) + " " + StartShift.getTimeInMillis());
+        System.err.println("StopShift:               " + sdf.format(StopShift.getTimeInMillis()) + " " + StopShift.getTimeInMillis());
+        System.err.println("StartLunch:              " + sdf.format(StartLunch.getTimeInMillis()) + " " + StartLunch.getTimeInMillis());
+        System.err.println("StopLunch:               " + sdf.format(StopLunch.getTimeInMillis()) + " " + StopLunch.getTimeInMillis());
+        System.err.println("StartInterval:           " + sdf.format(StartInterval.getTimeInMillis()) + " " + StartInterval.getTimeInMillis());
+        System.err.println("StopInterval:            " + sdf.format(StopInterval.getTimeInMillis()) + " " + StopInterval.getTimeInMillis());
+        System.err.println("StartGrace:              " + sdf.format(StartGrace.getTimeInMillis()) + " " + StartGrace.getTimeInMillis());
+        System.err.println("StopGrace:               " + sdf.format(StopGrace.getTimeInMillis()) + " " + StopGrace.getTimeInMillis());
+        System.err.println("StartDock:               " + sdf.format(StartDock.getTimeInMillis()) + " " + StartDock.getTimeInMillis());
+        System.err.println("StopDock:                " + sdf.format(StopDock.getTimeInMillis()) + " " + StopDock.getTimeInMillis());
+        System.err.println("AdjustedPunchIn:         " + sdf.format(AdjustedPunchIn.getTimeInMillis()) + " " + AdjustedPunchIn.getTimeInMillis());
+        System.err.println("AdjustedPunchOut:        " + sdf.format(AdjustedPunchOut.getTimeInMillis()) + " " + AdjustedPunchOut.getTimeInMillis());
+        System.err.println("\n");
+        */
         
         //Convert calendar objects to long int for comparison
         long OriginPunch = (OriginClock.getTimeInMillis()); //When the employee made their punch
@@ -262,51 +334,49 @@ public class Punch {
         //Begin Adjusting
         if (punchtypeid == 1 && !weekend){ //Clock in on a weekday
             if (TookLunch != true){ //need to add in TookLunch and logic to toggle it, but I am unsure where to do so -J. Moses
-                if (OriginPunch > EarlyStart && OriginPunch <= StartWork){ //If clock in punch is between StartInterval and StartShift (Clock in within interval)
+                if (OriginPunch >= EarlyStart && OriginPunch <= StartWork){ //If clock in punch is between StartInterval and StartShift (Clock in within interval)
                     adjustment = StartWork;
                     adjusted = true;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Shift Start)");
-                }else if (OriginPunch < OkStart && OriginPunch > StartWork){ //If clock in punch is between StartGrace abd StartShift (Clock in within grace period)
+                }else if (OriginPunch <= OkStart && OriginPunch >= StartWork){ //If clock in punch is between StartGrace abd StartShift (Clock in within grace period)
                     adjustment = StartWork;
                     adjusted = true;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Shift Start)");
-                }else if (OriginPunch > OkStart && OriginPunch < LateStart){ //If clock in punch is between StartGrace and StartDock (Clock in between Grace period and Dock)
+                }else if (OriginPunch > OkStart && OriginPunch <= LateStart){ //If clock in punch is between StartGrace and StartDock (Clock in between Grace period and Dock)
                     adjustment = LateStart;
                     adjusted = true;
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Shift Dock)");
                 }else { // Interval Round clock
-                    if (PunchMin/s.getInterval() == 0){ //None Clause: PunchMin/Inter = 0 :: reset seconds field to 0
+                    if (PunchMin%s.getInterval() == 0){ //None Clause: PunchMin/Inter = 0 :: reset seconds field to 0
                         adjustment = AdjustedOriginPunch;
                         setAdjustedtimestamp(adjustment);
                         setEventData("(None)");
 
-                    }else if (PunchMin/s.getInterval() > 0.5){ //Pucnh happend in the second half of an interval
+                    }else if ((PunchMin%s.getInterval())/s.getInterval() > 0.5){ //Pucnh happend in the second half of an interval
 
                         //calculate how many intervals have passed since the start of the shift, 
-                        long TE = OriginPunch - StartWork; // time elapsed from start of shift to clock in. This should be in millis
+                        long TE = StartWork - OriginPunch; // time elapsed from start of shift to clock in. This should be in millis
                         long IM = s.getInterval()*60000; // interval in milliseconds
                         long FI = TE/IM; // number of full intervals elapsed 
                         long Intervals = FI+1; //advance to next interval
                         long IntervalRoundMinutes = (Interval * Intervals); //convert number of intervals into minutes
                         int i = (int)IntervalRoundMinutes;
-                        GregorianCalendar AdjustedPunchIn = StartShift; //create new calendar object to make adjustments to the timestamp
-                        AdjustedPunchIn.add(Calendar.MINUTE, i); //advance the time to the next interval
+                        AdjustedPunchIn.add(Calendar.MINUTE, -i); //advance the time to the next interval
                         adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                         setAdjustedtimestamp(adjustment);
                         setEventData("(Interval Round)");
                     }else{ //punch happened in first half of interval
 
                         //calculate how many intervals have passed since the start of the shift, 
-                        long TE = OriginPunch - StartWork; // time elapsed from start of shift to clock in. This should be in millis
+                        long TE = StartWork - OriginPunch; // time elapsed from start of shift to clock in. This should be in millis
                         long IM = s.getInterval()*60000; // interval in milliseconds
                         long FI = TE/IM; // number of full intervals elapsed
                         long IntervalRoundMinutes = (Interval * FI); //convert number of intervals into minutes
                         int i = (int)IntervalRoundMinutes;
-                        GregorianCalendar AdjustedPunchIn = StartShift; //create new calendar object to make adjustments to the timestamp
-                        AdjustedPunchIn.add(Calendar.MINUTE, i); //advance the time to the next interval
+                        AdjustedPunchIn.add(Calendar.MINUTE, -i); //advance the time to the next interval
                         adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                         setAdjustedtimestamp(adjustment);
                         setEventData("(Interval Round)");
@@ -339,36 +409,34 @@ public class Punch {
                     setAdjustedtimestamp(adjustment);
                     setEventData("(Shift Dock)");
                 }else{ //Interval Round Check
-                    if (PunchMin/s.getInterval() == 0){ //None Clause: PunchMin/Inter = 0 :: reset seconds field to 0
+                    if (PunchMin%s.getInterval() == 0){ //None Clause: PunchMin/Inter = 0 :: reset seconds field to 0
                         adjustment = AdjustedOriginPunch;
                         setAdjustedtimestamp(adjustment);
                         setEventData("(None)");
 
-                    }else if (PunchMin/s.getInterval() < 0.5){ //Pucnh happend in the second half of an interval
+                    }else if ((PunchMin%s.getInterval())/s.getInterval() < 0.5){ //Pucnh happend in the second half of an interval
 
                         //calculate how many intervals have passed since the start of the shift, 
-                        long TE = StopWork - OriginPunch; // time elapsed from clock out to end of shift. This should be in millis
+                        long TE = OriginPunch - StopWork; // time elapsed from clock out to end of shift. This should be in millis
                         long IM = s.getInterval()*60000; // interval in milliseconds
                         long FI = TE/IM; // number of full intervals elapsed 
-                        long Intervals = FI+1; //advance to next interval
+                        long Intervals = FI; //advance to next interval
                         long IntervalRoundMinutes = (Interval * Intervals); //convert number of intervals into minutes
                         int i = (int)IntervalRoundMinutes;
-                        GregorianCalendar AdjustedPunchIn = StopShift; //create new calendar object to make adjustments to the timestamp
-                        AdjustedPunchIn.add(Calendar.MINUTE, -i); //advance the time to the next interval
-                        adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                        AdjustedPunchOut.add(Calendar.MINUTE, i); //advance the time to the next interval
+                        adjustment = (AdjustedPunchOut.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                         setAdjustedtimestamp(adjustment);
                         setEventData("(Interval Round)");
 
                     }else{ //punch happened in first half of interval
                         //calculate how many intervals have passed since the start of the shift, 
-                        long TE = StopWork - OriginPunch; // time elapsed from clock out to end of shift. This should be in millis
+                        long TE = OriginPunch - StopWork; // time elapsed from clock out to end of shift. This should be in millis
                         long IM = s.getInterval()*60000; // interval in milliseconds
                         long FI = TE/IM; // number of full intervals elapsed
                         long IntervalRoundMinutes = (Interval * FI); //convert number of intervals into minutes
                         int i = (int)IntervalRoundMinutes;
-                        GregorianCalendar AdjustedPunchIn = StopShift; //create new calendar object to make adjustments to the timestamp
-                        AdjustedPunchIn.add(Calendar.MINUTE, -i); //advance the time to the next interval
-                        adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                        AdjustedPunchOut.add(Calendar.MINUTE, i); //advance the time to the next interval
+                        adjustment = (AdjustedPunchOut.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                         setAdjustedtimestamp(adjustment);
                         setEventData("(Interval Round)");
                     }
@@ -386,22 +454,21 @@ public class Punch {
 
         //Interval round
         if (punchtypeid == 1 && weekend && !adjusted){ //Clock in
-            if (PunchMin/s.getInterval() == 0){ //None Clause: PunchMin/Inter = 0 :: reset seconds field to 0
+            if (PunchMin%s.getInterval() == 0){ //None Clause: PunchMin/Inter = 0 :: reset seconds field to 0
                 adjustment = AdjustedOriginPunch;
                 setAdjustedtimestamp(adjustment);
                 setEventData("(None)");
                 
-            }else if (PunchMin/s.getInterval() > 0.5){ //Pucnh happend in the second half of an interval
+            }else if ((PunchMin%s.getInterval())/s.getInterval() > 0.5){ //Pucnh happend in the second half of an interval
                 
                 //calculate how many intervals have passed since the start of the shift, 
-                long TE = OriginPunch - StartWork; // time elapsed from start of shift to clock in. This should be in millis
+                long TE = StartWork - OriginPunch; // time elapsed from start of shift to clock in. This should be in millis
                 long IM = s.getInterval()*60000; // interval in milliseconds
                 long FI = TE/IM; // number of full intervals elapsed 
-                long Intervals = FI+1; //advance to next interval
+                long Intervals = FI; //advance to next interval
                 long IntervalRoundMinutes = (Interval * Intervals); //convert number of intervals into minutes
                 int i = (int)IntervalRoundMinutes;
-                GregorianCalendar AdjustedPunchIn = StartShift; //create new calendar object to make adjustments to the timestamp
-                AdjustedPunchIn.add(Calendar.MINUTE, i); //advance the time to the next interval
+                AdjustedPunchIn.add(Calendar.MINUTE, -i); //advance the time to the next interval
                 adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                 setAdjustedtimestamp(adjustment);
                 setEventData("(Interval Round)");
@@ -411,45 +478,42 @@ public class Punch {
                 long TE = OriginPunch - StartWork; // time elapsed from start of shift to clock in. This should be in millis
                 long IM = s.getInterval()*60000; // interval in milliseconds
                 long FI = TE/IM; // number of full intervals elapsed
-                long IntervalRoundMinutes = (Interval * FI); //convert number of intervals into minutes
+                long IntervalRoundMinutes = (Interval * (FI-1)); //convert number of intervals into minutes
                 int i = (int)IntervalRoundMinutes;
-                GregorianCalendar AdjustedPunchIn = StartShift; //create new calendar object to make adjustments to the timestamp
-                AdjustedPunchIn.add(Calendar.MINUTE, i); //advance the time to the next interval
+                AdjustedPunchIn.add(Calendar.MINUTE, + i); //advance the time to the next interval
                 adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                 setAdjustedtimestamp(adjustment);
                 setEventData("(Interval Round)");
             }
         }else if (punchtypeid == 0){ //Interval round for clock out
-            if (PunchMin/s.getInterval() == 0){ //None Clause: PunchMin/Inter = 0 :: reset seconds field to 0
+            if (PunchMin%s.getInterval() == 0){ //None Clause: PunchMin/Inter = 0 :: reset seconds field to 0
                 adjustment = AdjustedOriginPunch;
                 setAdjustedtimestamp(adjustment);
                 setEventData("(None)");
                 
-            }else if (PunchMin/s.getInterval() < 0.5){ //Pucnh happend in the second half of an interval
+            }else if ((PunchMin%s.getInterval())/s.getInterval() < 0.5){ //Pucnh happend in the second half of an interval
                 
                 //calculate how many intervals have passed since the start of the shift, 
-                long TE = StopWork - OriginPunch; // time elapsed from clock out to end of shift. This should be in millis
+                long TE = OriginPunch - StopWork; // time elapsed from clock out to end of shift. This should be in millis
                 long IM = s.getInterval()*60000; // interval in milliseconds
                 long FI = TE/IM; // number of full intervals elapsed 
-                long Intervals = FI+1; //advance to next interval
+                long Intervals = FI; //advance to next interval
                 long IntervalRoundMinutes = (Interval * Intervals); //convert number of intervals into minutes
                 int i = (int)IntervalRoundMinutes;
-                GregorianCalendar AdjustedPunchIn = StopShift; //create new calendar object to make adjustments to the timestamp
-                AdjustedPunchIn.add(Calendar.MINUTE, -i); //advance the time to the next interval
-                adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                AdjustedPunchOut.add(Calendar.MINUTE, i); //advance the time to the next interval
+                adjustment = (AdjustedPunchOut.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                 setAdjustedtimestamp(adjustment);
                 setEventData("(Interval Round)");
                 
             }else{ //punch happened in first half of interval
                 //calculate how many intervals have passed since the start of the shift, 
-                long TE = StopWork - OriginPunch; // time elapsed from clock out to end of shift. This should be in millis
+                long TE = OriginPunch - StopWork; // time elapsed from clock out to end of shift. This should be in millis
                 long IM = s.getInterval()*60000; // interval in milliseconds
                 long FI = TE/IM; // number of full intervals elapsed
                 long IntervalRoundMinutes = (Interval * FI); //convert number of intervals into minutes
                 int i = (int)IntervalRoundMinutes;
-                GregorianCalendar AdjustedPunchIn = StopShift; //create new calendar object to make adjustments to the timestamp
-                AdjustedPunchIn.add(Calendar.MINUTE, -i); //advance the time to the next interval
-                adjustment = (AdjustedPunchIn.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                AdjustedPunchOut.add(Calendar.MINUTE, i); //advance the time to the next interval
+                adjustment = (AdjustedPunchOut.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
                 setAdjustedtimestamp(adjustment);
                 setEventData("(Interval Round)");
             }
