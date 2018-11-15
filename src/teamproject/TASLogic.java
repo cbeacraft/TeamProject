@@ -11,25 +11,26 @@ import java.util.*;
  * @author Brooke
  */
 public class TASLogic {
-    
-    
     public static int calculateTotalMinutes(ArrayList<Punch> dailypunchlist, Shift shift){
-      return 1;  
+        int clockedMins = 0;
+            if (dailypunchlist.size() < 2){
+        return 0;
+ }
+    for (int i = 0; i < dailypunchlist.size(); i=i+2){
+        Punch clockIn = (Punch) dailypunchlist.get(i);
+        Punch clockOut = (Punch) dailypunchlist.get(i+1);
+
+        if (clockIn.getPunchtypeid()!=2 && clockOut.getPunchtypeid()!=2){
+      // long clockDiff = (AdjustedMathStuff)
+      // What calculations the adjusted math needs to have
+      // clockedMins = adjustments
     }
-    
-    public void testMinutesAccruedShift1Weekday() {
-        
+    if (clockedMins > clockin.getLunchdeduct && /lunch happens/() == True){
+        int LunchMins = clockedMins - shift.getLunchBreak();
+        return LunchMins;
     }
-    
-     public void testMinutesAccruedShift1WeekdayWithTimeout() {
-         
-    }
-     
-     public void testMinutesAccruedShift1Weekend() {
-         
-    }
-     
-     public void testMinutesAccruedShift2Weekday() {
-         
-    }
+ } 
+    return clockedMins; 
+   
+}
 }
