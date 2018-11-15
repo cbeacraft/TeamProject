@@ -270,6 +270,7 @@ public class Punch {
         AdjustedPunchOut.set(Calendar.SECOND, 00);
         
         double PunchMin = OriginClock.get(Calendar.MINUTE);
+        double PunchSec = OriginClock.get(Calendar.SECOND);
         
         
         //DIAGNOSTIC RETURNS
@@ -283,26 +284,31 @@ public class Punch {
         System.err.println("shiftStopHr:   " + shiftStopHr);
         System.err.println("shiftStopMin:  " + shiftStopMin);
         System.err.println("PunchMin:      " + PunchMin);
+        System.err.println("PunchSec:      " + PunchSec);
         System.err.println("Interval:      " + Interval);
         System.err.println("Grace:         " + Grace);
         System.err.println("Dock:          " + Dock);
         System.err.println("");
         //Diagnostics for Time Stamps
         System.err.println("Timestamp objects");
-        System.err.println("OriginClock:             " + sdf.format(OriginClock.getTimeInMillis()) + " " + OriginClock.getTimeInMillis());
-        System.err.println("OriginClockSecondsReset: " + sdf.format(OriginClockSecondsReset.getTimeInMillis()) + " " + OriginClockSecondsReset.getTimeInMillis());
-        System.err.println("StartShift:              " + sdf.format(StartShift.getTimeInMillis()) + " " + StartShift.getTimeInMillis());
-        System.err.println("StopShift:               " + sdf.format(StopShift.getTimeInMillis()) + " " + StopShift.getTimeInMillis());
-        System.err.println("StartLunch:              " + sdf.format(StartLunch.getTimeInMillis()) + " " + StartLunch.getTimeInMillis());
-        System.err.println("StopLunch:               " + sdf.format(StopLunch.getTimeInMillis()) + " " + StopLunch.getTimeInMillis());
-        System.err.println("StartInterval:           " + sdf.format(StartInterval.getTimeInMillis()) + " " + StartInterval.getTimeInMillis());
-        System.err.println("StopInterval:            " + sdf.format(StopInterval.getTimeInMillis()) + " " + StopInterval.getTimeInMillis());
-        System.err.println("StartGrace:              " + sdf.format(StartGrace.getTimeInMillis()) + " " + StartGrace.getTimeInMillis());
-        System.err.println("StopGrace:               " + sdf.format(StopGrace.getTimeInMillis()) + " " + StopGrace.getTimeInMillis());
-        System.err.println("StartDock:               " + sdf.format(StartDock.getTimeInMillis()) + " " + StartDock.getTimeInMillis());
-        System.err.println("StopDock:                " + sdf.format(StopDock.getTimeInMillis()) + " " + StopDock.getTimeInMillis());
-        System.err.println("AdjustedPunchIn:         " + sdf.format(AdjustedPunchIn.getTimeInMillis()) + " " + AdjustedPunchIn.getTimeInMillis());
-        System.err.println("AdjustedPunchOut:        " + sdf.format(AdjustedPunchOut.getTimeInMillis()) + " " + AdjustedPunchOut.getTimeInMillis());
+        
+        System.err.println("Employee's Punch          EEE MM/DD/YYYY HH:mm:ss In Millis");
+        System.err.println(" OriginClock:             " + sdf.format(OriginClock.getTimeInMillis()) + " " + OriginClock.getTimeInMillis());
+        System.err.println(" OriginClockSecondsReset: " + sdf.format(OriginClockSecondsReset.getTimeInMillis()) + " " + OriginClockSecondsReset.getTimeInMillis());
+        System.err.println("Start times               EEE MM/DD/YYYY HH:mm:ss In Millis");
+        System.err.println(" StartShift:              " + sdf.format(StartShift.getTimeInMillis()) + " " + StartShift.getTimeInMillis());
+        System.err.println(" StartLunch:              " + sdf.format(StartLunch.getTimeInMillis()) + " " + StartLunch.getTimeInMillis());
+        System.err.println(" StartInterval:           " + sdf.format(StartInterval.getTimeInMillis()) + " " + StartInterval.getTimeInMillis());
+        System.err.println(" StartGrace:              " + sdf.format(StartGrace.getTimeInMillis()) + " " + StartGrace.getTimeInMillis());
+        System.err.println(" StartDock:               " + sdf.format(StartDock.getTimeInMillis()) + " " + StartDock.getTimeInMillis());
+        System.err.println("Stop times                EEE MM/DD/YYYY HH:mm:ss In Millis");
+        System.err.println(" StopShift:               " + sdf.format(StopShift.getTimeInMillis()) + " " + StopShift.getTimeInMillis());
+        System.err.println(" StopLunch:               " + sdf.format(StopLunch.getTimeInMillis()) + " " + StopLunch.getTimeInMillis());
+        System.err.println(" StopInterval:            " + sdf.format(StopInterval.getTimeInMillis()) + " " + StopInterval.getTimeInMillis());
+        System.err.println(" StopGrace:               " + sdf.format(StopGrace.getTimeInMillis()) + " " + StopGrace.getTimeInMillis());
+        System.err.println(" StopDock:                " + sdf.format(StopDock.getTimeInMillis()) + " " + StopDock.getTimeInMillis());
+        //System.err.println("AdjustedPunchIn:         " + sdf.format(AdjustedPunchIn.getTimeInMillis()) + " " + AdjustedPunchIn.getTimeInMillis());
+        //System.err.println("AdjustedPunchOut:        " + sdf.format(AdjustedPunchOut.getTimeInMillis()) + " " + AdjustedPunchOut.getTimeInMillis());
         System.err.println("\n");
         
         
@@ -330,6 +336,9 @@ public class Punch {
         if (!((otsDay == Calendar.SATURDAY)||(otsDay == Calendar.SUNDAY))){
             weekend = false;
         }
+        System.err.println("Weekend: " + weekend);
+        System.err.println("Punchtypeid: " + punchtypeid);
+        System.err.println("TookLunch: " + TookLunch);
               
         //Begin Adjusting
         if (punchtypeid == 1 && !weekend){ //Clock in on a weekday
@@ -392,56 +401,72 @@ public class Punch {
                 }
             }
         }else if (punchtypeid == 0 && !weekend){ //Clock out on a week day
-            if (TookLunch == true){
+            System.err.print("Punch was clcok out for ");
+            if (TookLunch == false){
+                System.err.println("the day.\n");
+                System.err.println("Clock out during clock out interval? " + (OriginPunch < LateStop && OriginPunch >= StopWork));
+                System.err.println("Clock out within clock out grace?    " + (OriginPunch > OkStop && OriginPunch < StopWork));
+                System.err.println("Clock out inside normal dock range?  " + (OriginPunch < OkStop && OriginPunch > EarlyStop));
                 if (OriginPunch < LateStop && OriginPunch >= StopWork){ //If clock out is between StopInterval and StopShift (clock out inside interval window)
-                        adjustment = StopWork;
-                        adjusted = true;
-                        setAdjustedtimestamp(adjustment);
-                        setEventData("(Shift Stop)");
-                    }else if (OriginPunch > OkStop && OriginPunch < StopWork){ //If clock out is between StopGrace and StopShift (clock out inside grace period)
-                        adjustment = StopWork;
-                        adjusted = true;
-                        setAdjustedtimestamp(adjustment);
-                        setEventData("(Shift Stop)");
-                    }else if (OriginPunch < OkStop && OriginPunch < EarlyStop){ //If clock out is between StopGrace and StopDock (clock out before grace period)
-                        adjustment = EarlyStop;
-                        adjusted = true;
-                        setAdjustedtimestamp(adjustment);
-                        setEventData("(Shift Dock)");
-                    }else{ //Interval Round Check
-                        if (PunchMin%s.getInterval() == 0){ //None Clause: PunchMin/Inter = 0 :: reset seconds field to 0
-                    adjustment = AdjustedOriginPunch;
+                    adjustment = StopWork;
+                    adjusted = true;
                     setAdjustedtimestamp(adjustment);
-                    setEventData("(None)");
-
-                }else if ((PunchMin%s.getInterval())/s.getInterval() < 0.5){ //Pucnh happend in the second half of an interval
-
-                    //calculate how many intervals have passed since the start of the shift, 
-                    long TE = StopWork - OriginPunch; // time elapsed from clock out to end of shift. This should be in millis
-                    long IM = s.getInterval()*60000; // interval in milliseconds
-                    long FI = TE/IM; // number of full intervals elapsed 
-                    long Intervals = FI; //advance to next interval
-                    long IntervalRoundMinutes = (Interval * (Intervals)); //convert number of intervals into minutes
-                    int i = (int)IntervalRoundMinutes;
-                    AdjustedPunchOut.add(Calendar.MINUTE, i); //advance the time to the next interval
-                    adjustment = (AdjustedPunchOut.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                    setEventData("(Shift Stop)");
+                }else if (OriginPunch > OkStop && OriginPunch < StopWork){ //If clock out is between StopGrace and StopShift (clock out inside grace period)
+                    adjustment = StopWork;
+                    adjusted = true;
                     setAdjustedtimestamp(adjustment);
-                    setEventData("(Interval Round)");
-
-                }else{ //punch happened in first half of interval
-                    //calculate how many intervals have passed since the start of the shift, 
-                    long TE = StopWork - OriginPunch; // time elapsed from clock out to end of shift. This should be in millis
-                    long IM = s.getInterval()*60000; // interval in milliseconds
-                    long FI = TE/IM; // number of full intervals elapsed
-                    long IntervalRoundMinutes = (Interval * (FI+1)); //convert number of intervals into minutes
-                    int i = (int)IntervalRoundMinutes;
-                    AdjustedPunchOut.add(Calendar.MINUTE, (i+1)); //advance the time to the next interval
-                    adjustment = (AdjustedPunchOut.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                    setEventData("(Shift Stop)");
+                }else if (OriginPunch < OkStop && OriginPunch > EarlyStop){ //If clock out is between StopGrace and StopDock (clock out before grace period)
+                    adjustment = EarlyStop;
+                    adjusted = true;
                     setAdjustedtimestamp(adjustment);
-                    setEventData("(Interval Round)");
-                }
+                    setEventData("(Shift Dock)");
+                }else{ //Interval Round Check
+                    System.err.println("PunchMin = " + PunchMin + " Interval = " + Interval);
+                    System.err.println("Punchmin % Interval = " + PunchMin%Interval);
+                    System.err.println("PunchMin + PunchSec/60 / Interval = " + (PunchMin+(PunchSec/60))/Interval + " aka true value of PunchMoment/Interval");
+                    if (PunchMin%s.getInterval() == 0){ //None Clause: PunchMin/Inter = 0 :: reset seconds field to 0
+                        System.err.println("Checking for Minutes % 15 =0 (Punch event occured on an interval)");
+                        adjustment = AdjustedOriginPunch;
+                        setAdjustedtimestamp(adjustment);
+                        setEventData("(None)");
+
+                    }else if ((PunchMin+(PunchSec/60))/s.getInterval() < 0.5){ //Pucnh happend in the second half of an interval
+                        System.err.println("Checking for Minutes % 15 / 15 < 0.5 (Punch event occured during First half of an interval)");
+                        System.err.println((PunchMin%s.getInterval())/s.getInterval() < 0.5);
+                        //calculate how many intervals have passed since the start of the shift, 
+                        long TE = StopWork - OriginPunch; // time elapsed from clock out to end of shift. This should be in millis
+                        System.err.println("TE = " + TE);
+                        long IM = s.getInterval()*60000; // interval in milliseconds
+                        long FI = TE/IM; // number of full intervals elapsed 
+                        System.err.println("FI = " + FI);
+                        long Intervals = FI; //advance to next interval
+                        long IntervalRoundMinutes = (Interval * (Intervals-1)); //convert number of intervals into minutes
+                        int i = (int)IntervalRoundMinutes;
+                        AdjustedPunchOut.add(Calendar.MINUTE, i); //advance the time to the next interval
+                        adjustment = (AdjustedPunchOut.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                        setAdjustedtimestamp(adjustment);
+                        setEventData("(Interval Round)");
+
+                    }else{ //punch happened in first half of interval
+                        System.err.println("Checking for Minutes % 15 / 15 > 0.5 (Punch event occured during last half of an interval)");
+                        //calculate how many intervals have passed since the start of the shift, 
+                        long TE = StopWork - OriginPunch; // time elapsed from clock out to end of shift. This should be in millis
+                        System.err.println("TE = " + TE);
+                        long IM = s.getInterval()*60000; // interval in milliseconds
+                        long FI = TE/IM; // number of full intervals elapsed
+                        System.err.println("FI = " + FI);
+                        long IntervalRoundMinutes = (Interval * (FI)); //convert number of intervals into minutes
+                        int i = (int)IntervalRoundMinutes;
+                        AdjustedPunchOut.add(Calendar.MINUTE, (i)); //advance the time to the next interval
+                        adjustment = (AdjustedPunchOut.getTimeInMillis()); //convert calendar objecto to long and capture it for sending to setAdjustedtimestamp
+                        setAdjustedtimestamp(adjustment);
+                        setEventData("(Interval Round)");
+                    }
                 }
             }else{ //Clocking out for lunch
+                System.err.println("lunch.");
                 if (OriginPunch < CeaseBreak && OriginPunch > BeginBreak){ //Clock out during lunch window
                     setTookLunch(true);
                     adjusted = true;
@@ -518,5 +543,7 @@ public class Punch {
                 setEventData("(Interval Round)");
             }
         }
+        System.err.println("AdjustedPunchIn:         " + sdf.format(AdjustedPunchIn.getTimeInMillis()) + " " + AdjustedPunchIn.getTimeInMillis());
+        System.err.println("AdjustedPunchOut:        " + sdf.format(AdjustedPunchOut.getTimeInMillis()) + " " + AdjustedPunchOut.getTimeInMillis() + "\n\n\n");
     }
 }
