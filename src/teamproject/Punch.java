@@ -332,6 +332,14 @@ public class Punch {
         
         long AdjustedOriginPunch = (OriginClockSecondsReset.getTimeInMillis()); //Original pucnh with seconds field set to zero, useful in IntervalRound
         
+        if(OriginPunch >= BeginBreak)
+        {
+            TookLunch = true;
+        }
+        else
+        {
+            TookLunch = false;
+        }
         
         /*int PunchNum = db.getDailyPunchList(badge, OriginPunch).size();
         if (PunchNum == 1){
@@ -413,7 +421,7 @@ public class Punch {
             }
         }else if (punchtypeid == 0 && !weekend){ //Clock out on a week day
             System.err.print("Punch was clcok out for ");
-            if (TookLunch != true){
+            if (TookLunch == true){
                 System.err.println("the day.\n");
                 System.err.println("Clock out during clock out interval? " + (OriginPunch < LateStop && OriginPunch >= StopWork));
                 System.err.println("Clock out within clock out grace?    " + (OriginPunch > OkStop && OriginPunch < StopWork));
