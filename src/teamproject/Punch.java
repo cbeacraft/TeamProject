@@ -176,7 +176,7 @@ public class Punch {
         //double PunchMin = OriginClock.MINUTE;//why is this not updating with a new punch?
         long adjustment; //Will be used for the adjusted timestamp as needed
         boolean weekend = true; //flag that checks for weekend
-        boolean IsFirstPunch = false;
+        //boolean IsFirstPunch = false;
         long Interval = s.getInterval();
         long Dock = s.getDock();
         long Grace = s.getGraceperiod();
@@ -361,7 +361,9 @@ public class Punch {
               
         //Begin Adjusting
         if (punchtypeid == 1 && !weekend){ //Clock in on a weekday
-            if (TookLunch != true){ //need to add in TookLunch and logic to toggle it, but I am unsure where to do so -J. Moses
+            System.err.print("Punch was clock in ");
+            if (OriginPunch < BeginBreak){ //need to add in TookLunch and logic to toggle it, but I am unsure where to do so -J. Moses
+                System.err.println("at the beginning of the shift.");
                 if (OriginPunch >= EarlyStart && OriginPunch <= StartWork){ //If clock in punch is between StartInterval and StartShift (Clock in within interval)
                     adjustment = StartWork;
                     adjusted = true;
@@ -410,8 +412,11 @@ public class Punch {
                         setEventData("(Interval Round)");
                     }
                 }                
-            }else { //Clocking in from lunch
-                if (OriginPunch < CeaseBreak && OriginPunch < BeginBreak){ //If clock in punch is duirng lunch window
+            }else{ //Clocking in from lunch
+                System.err.println("from lunch.");
+                System.err.println("OriginPunch <= CeaseBreak: " + (OriginPunch <= CeaseBreak));
+                System.err.println("OriginPunch >= BeginBreak: " + (OriginPunch >= BeginBreak));
+                if (OriginPunch <= CeaseBreak && OriginPunch >= BeginBreak){ //If clock in punch is duirng lunch window
                     setTookLunch(false);
                     adjusted = true;
                     adjustment = CeaseBreak;
@@ -420,8 +425,8 @@ public class Punch {
                 }
             }
         }else if (punchtypeid == 0 && !weekend){ //Clock out on a week day
-            System.err.print("Punch was clcok out for ");
-            if (TookLunch == true){
+            System.err.print("Punch was clock out for ");
+            if (OriginPunch > CeaseBreak){
                 System.err.println("the day.\n");
                 System.err.println("Clock out during clock out interval? " + (OriginPunch < LateStop && OriginPunch >= StopWork));
                 System.err.println("Clock out within clock out grace?    " + (OriginPunch > OkStop && OriginPunch < StopWork));
@@ -487,7 +492,7 @@ public class Punch {
                         setEventData("(Interval Round)");
                     }
                 }
-            }else{ //Clocking out for lunch
+            }else { //Clocking out for lunch
                 System.err.println("lunch.");
                 if (OriginPunch < CeaseBreak && OriginPunch > BeginBreak){ //Clock out during lunch window
                     setTookLunch(true);
@@ -567,5 +572,8 @@ public class Punch {
         }
         System.err.println("AdjustedPunchIn:         " + sdf.format(AdjustedPunchIn.getTimeInMillis()) + " " + AdjustedPunchIn.getTimeInMillis());
         System.err.println("AdjustedPunchOut:        " + sdf.format(AdjustedPunchOut.getTimeInMillis()) + " " + AdjustedPunchOut.getTimeInMillis() + "\n\n\n");
+        
+        
+        //System.err.println("Current value of adjustment is : " + adjustment + " or as a date format: " + sdf.format(adjustment) + "\n\n");
     }
 }
