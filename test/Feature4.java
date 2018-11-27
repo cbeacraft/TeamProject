@@ -2,6 +2,7 @@ import teamproject.Shift;
 import teamproject.TASDatabase;
 import teamproject.Punch;
 import teamproject.Badge;
+import teamproject.TASLogic;
 
 import java.util.ArrayList;
 import org.junit.*;
