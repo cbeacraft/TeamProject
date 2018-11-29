@@ -20,6 +20,8 @@ public class TASLogic {
     for (int i = 0; i < dailypunchlist.size(); i = i + 2){
         Punch clockIn = (Punch) dailypunchlist.get(i);
         Punch clockOut = (Punch) dailypunchlist.get(i+1);
+        Punch clockIn2 = (Punch) dailypunchlist.get(0);
+        Punch clockOut2 = (Punch) dailypunchlist.get(1);
         
         
         
@@ -33,10 +35,6 @@ public class TASLogic {
     if (clockIn.getPunchtypeid()!=2 && clockOut.getPunchtypeid()!=2){
         
         if(dailypunchlist.size() > 2){
-            Punch clockIn2;
-            Punch clockOut2;
-            clockIn2 = (Punch) dailypunchlist.get(0);
-            clockOut2 = (Punch) dailypunchlist.get(1);
             clockedMins = (((int)clockOut.getAdjustedtimestamp() + (int)clockOut2.getAdjustedtimestamp()) - ((int)clockIn.getAdjustedtimestamp() + (int)clockIn2.getAdjustedtimestamp()))/60000;
         }
         
@@ -47,13 +45,18 @@ public class TASLogic {
                 
     }
     
-    System.err.println("ClockedIN =" + clockedMins);
+    System.err.println("ClockedMins =" + clockedMins);
     
-    if (((clockIn.getTookLunch()) == true)){
+    
+    if (((clockIn.getTookLunch())) || clockIn2.getTookLunch()){
         clockedMins = clockedMins - 30;
         
     }
- } 
+    else if(!(clockIn.getTookLunch()) && (clockedMins > 480)){
+        clockedMins = clockedMins - 30;
+    }
+        
+ }
     return clockedMins; 
    
 }
