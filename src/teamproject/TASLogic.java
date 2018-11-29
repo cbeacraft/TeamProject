@@ -17,16 +17,20 @@ public class TASLogic {
         return 0;
     }
             
-    for (int i = 0; i < dailypunchlist.size(); i=i+2){
+    for (int i = 0; i < dailypunchlist.size(); i = i + 2){
         Punch clockIn = (Punch) dailypunchlist.get(i);
         Punch clockOut = (Punch) dailypunchlist.get(i+1);
-        
+    System.err.println("I: " + i);
+    System.err.println("Clock In Punch: " + clockIn.printAdjustedTimestamp());
+    System.err.println("Clock Out Punch: " + clockOut.printAdjustedTimestamp());
+    System.err.println("Daily Punch List: " + dailypunchlist.size());
+           
     
 
     if (clockIn.getPunchtypeid()!=2 && clockOut.getPunchtypeid()!=2){
-      // long clockDiff = (AdjustedMathStuff)
-      // What calculations the adjusted math needs to have
-      // clockedMins = adjustments
+       
+        clockedMins = ((int)clockOut.getAdjustedtimestamp() - (int)clockIn.getAdjustedtimestamp())/60000;
+                
     }
     
     if ((clockedMins > shift.getLunchdeduct()) && ((clockIn.getTookLunch()) == true)){
