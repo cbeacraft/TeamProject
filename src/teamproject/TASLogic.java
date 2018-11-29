@@ -20,6 +20,9 @@ public class TASLogic {
     for (int i = 0; i < dailypunchlist.size(); i = i + 2){
         Punch clockIn = (Punch) dailypunchlist.get(i);
         Punch clockOut = (Punch) dailypunchlist.get(i+1);
+        
+        
+        
     System.err.println("I: " + i);
     System.err.println("Clock In Punch: " + clockIn.printAdjustedTimestamp());
     System.err.println("Clock Out Punch: " + clockOut.printAdjustedTimestamp());
@@ -28,14 +31,27 @@ public class TASLogic {
     
 
     if (clockIn.getPunchtypeid()!=2 && clockOut.getPunchtypeid()!=2){
-       
-        clockedMins = ((int)clockOut.getAdjustedtimestamp() - (int)clockIn.getAdjustedtimestamp())/60000;
+        
+        if(dailypunchlist.size() > 2){
+            Punch clockIn2;
+            Punch clockOut2;
+            clockIn2 = (Punch) dailypunchlist.get(0);
+            clockOut2 = (Punch) dailypunchlist.get(1);
+            clockedMins = (((int)clockOut.getAdjustedtimestamp() + (int)clockOut2.getAdjustedtimestamp()) - ((int)clockIn.getAdjustedtimestamp() + (int)clockIn2.getAdjustedtimestamp()))/60000;
+        }
+        
+        else{
+            clockedMins = ((int)clockOut.getAdjustedtimestamp() - (int)clockIn.getAdjustedtimestamp())/60000;
+        }
+        
                 
     }
     
-    if ((clockedMins > shift.getLunchdeduct()) && ((clockIn.getTookLunch()) == true)){
-        int LunchMins = clockedMins - shift.getLunchdeduct();
-        return LunchMins;
+    System.err.println("ClockedIN =" + clockedMins);
+    
+    if (((clockIn.getTookLunch()) == true)){
+        clockedMins = clockedMins - 30;
+        
     }
  } 
     return clockedMins; 
