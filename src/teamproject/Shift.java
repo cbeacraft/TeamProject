@@ -126,6 +126,9 @@ public class Shift {
     }
     
     //Getter Mrthods
+    public int getLunchDuration(){
+        return (int)MINUTES.between(lunchstart, lunchstop);
+    }
      
     public int getStartHour() {
         

@@ -16,6 +16,7 @@ public class TASLogic {
             if (dailypunchlist.size() < 2){
         return 0;
     }
+            boolean LunchTaken = false;
             
     for (int i = 0; i < dailypunchlist.size(); i = i + 2){
         Punch clockIn = (Punch) dailypunchlist.get(i);
@@ -48,15 +49,16 @@ public class TASLogic {
     System.err.println("ClockedMins =" + clockedMins);
     
     
+
     if (((clockIn.getTookLunch())) || clockIn2.getTookLunch()){
-        clockedMins = clockedMins - 30;
+        LunchTaken = true;
         
-    }
-    else if(!(clockIn.getTookLunch()) && (clockedMins > 480)){
-        clockedMins = clockedMins - 30;
     }
         
  }
+    if (!LunchTaken && clockedMins > shift.getLunchdeduct()){
+        clockedMins -= shift.getLunchDuration();
+    }
     return clockedMins; 
    
 }
